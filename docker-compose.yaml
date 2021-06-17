@@ -1,0 +1,66 @@
+version: '2.2'
+
+# Let's build all the services required to run this app (dev version)
+# We need -
+# MySQL => Database
+# Nginx => Web Server
+# PHP-FPM => PHP
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    command: mysqld --sql_mode=""
+    volumes:
+      - ./docker/mysql/dump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: symfony
+      MYSQL_DATABASE: symfony  # Database will be created on start
+      MYSQL_USER: symfony      # Password for MySQL User.
+      MYSQL_PASSWORD: symfony
+    # We need to run healthcheck because we need to make sure that the initial & default
+    # database has been created
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=symfony --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+  php:
+    container_name: php
+    user: 1000:1000 # rw access
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
+      APP_ENV: dev  # For debugging purpose we built it as a dev version
+      PHP_IDE_CONFIG: serverName=symfony-php # This needs to be in under PHP -> Servers -> Name (Set to symfony-php)
+    links:
+      - mysql
+    depends_on:
+      mysql:
+        condition: service_healthy    # DB service must be in healthy state to start this App
+  nginx:
+    container_name: nginx
+    volumes:
+      - .:/var/www/html
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "80:80"   # Webserver will run on http://localhost
+    depends_on:
+      - php     # Web App service must be running
+      - mysql          # DB must be ready
+  encore:
+    image: node:alpine
+    user: 1000:1000
+    command: ["yarn", "install"]
+    volumes:
+      - .:/app
+    working_dir: /app
