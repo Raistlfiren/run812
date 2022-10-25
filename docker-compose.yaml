@@ -8,24 +8,19 @@ version: '2.2'
 services:
   mysql:
     container_name: mysql
-    image: mysql:5.7
-    command: mysqld --sql_mode=""
+    image: mysql:8.0.23
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --sort_buffer_size=1073741824
     volumes:
-      - ./docker/mysql/dump:/docker-entrypoint-initdb.d
+      - ./docker/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: symfony
       MYSQL_DATABASE: symfony  # Database will be created on start
       MYSQL_USER: symfony      # Password for MySQL User.
       MYSQL_PASSWORD: symfony
-    # We need to run healthcheck because we need to make sure that the initial & default
-    # database has been created
     ports:
       - "3306:3306"
-    healthcheck:
-      test: "/usr/bin/mysql --user=root --password=symfony --execute \"SHOW DATABASES;\""
-      interval: 2s
-      timeout: 20s
-      retries: 10
   php:
     container_name: php
     user: 1000:1000 # rw access
@@ -40,11 +35,12 @@ services:
       DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
       APP_ENV: dev  # For debugging purpose we built it as a dev version
       PHP_IDE_CONFIG: serverName=symfony-php # This needs to be in under PHP -> Servers -> Name (Set to symfony-php)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     links:
       - mysql
     depends_on:
-      mysql:
-        condition: service_healthy    # DB service must be in healthy state to start this App
+      - mysql
   nginx:
     container_name: nginx
     volumes:
@@ -60,7 +56,6 @@ services:
   encore:
     image: node:alpine
     user: 1000:1000
-    command: ["yarn", "install"]
     volumes:
       - .:/app
     working_dir: /app

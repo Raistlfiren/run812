@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+          crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
+
+    <style>
+        .maps {
+            height: 250px;
+        }
+    </style>
+
+    <script>
+        const maps = {};
+    </script>
+
+    <section class="py-5">
+        <h1 class="fw-light text-center">Filter routes</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <label for="nameSearch" class="form-label">Area</label>
+                    {% for location in locations %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                            <label class="form-check-label" for="inlineCheckbox1">{{ location.title }}</label>
+                        </div>
+                    {% endfor %}
+
+                </div>
+                <div class="col">
+                    <label for="nameSearch" class="form-label">Route Name</label>
+                    <input type="text" class="form-control" id="nameSearch">
+                </div>
+                <div class="col">
+                    <label for="distanceSearch" class="form-label">Distance</label>
+                    <input type="text" class="form-control" data-min={{ minDistance.0.distance }} data-max={{ maxdistance.0.distance }} id="distanceSearch">
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <div class="py-5 bg-light">
+        <div class="container">
+            <div class="row gy-3">
+                {% set routeCollectionName = '' %}
+
+                {% for route in routes %}
+                    {% if route.routeCollection is empty %}
+                        <div class="col-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    {{ route.name }}
+                                </div>
+                                <div class="card-body text-center">
+                                    <p id="map-{{ route.slug }}" class="maps"></p>
+                                    <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">View Route</a>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col justify-content-start">
+                                            <span class="badge bg-primary">{{ route.distance }}</span>
+                                        </div>
+                                        <div class="col justify-content-end text-end">
+                                            <span class="badge bg-secondary">eastside</span>
+                                            <span class="badge bg-secondary">westside</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            maps['map-{{ route.slug }}'] = L.map('map-{{ route.slug }}', {zoomControl: false}).setView([37.9963535,-87.6138192], 12);
+
+                            fetch('{{ path('route_geojson', {slug: route.slug}) }}')
+                                .then((response) => response.json())
+                                .then(function (data) {
+                                    let map = maps['map-'+data.slug];
+
+                                    L.geoJSON(data.geojson, {
+                                        pointToLayer: function(feature, latlng) {
+                                            var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
+
+                                            if (feature.properties.name == 'start') {
+                                                marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
+                                            }
+
+                                            return marker;
+                                        }
+                                    }).addTo(map);
+
+                                    let bbox = data.geojson.features[0].bbox;
+
+                                    map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+                                });
+                        </script>
+                    {% else %}
+                        {% if routeCollectionName != route.routeCollection.name %}
+                            <div class="col-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        {{ route.routeCollection.name }}
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <p id="map-{{ route.slug }}" class="maps"></p>
+                                        <a href="{{ path('route_view', {'slug': route.routeCollection.slug}) }}" class="btn btn-primary">View Route</a>
+                                    </div>
+                                    <div class="card-footer">
+                                        {% for routeItem in route.routeCollection.routes %}
+                                            <span class="badge bg-primary">{{ routeItem.distance }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                maps['map-{{ route.slug }}'] = L.map('map-{{ route.slug }}', {zoomControl: false}).setView([37.9963535,-87.6138192], 12);
+
+                                fetch('{{ path('route_geojson', {slug: route.slug}) }}')
+                                    .then((response) => response.json())
+                                    .then(function (data) {
+                                        let map = maps['map-'+data.slug];
+
+                                        L.geoJSON(data.geojson, {
+                                            pointToLayer: function(feature, latlng) {
+                                                var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
+
+                                                if (feature.properties.name == 'start') {
+                                                    marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
+                                                }
+
+                                                return marker;
+                                            }
+                                        }).addTo(map);
+
+                                        let bbox = data.geojson.features[0].bbox;
+
+                                        map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+                                    });
+                            </script>
+                        {% endif %}
+                        {% set routeCollectionName = route.routeCollection.name %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+          crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
+
+    <style>
+        #map { height: calc( 100vh - 5em ); width: auto; flex-grow: 1;}
+        .sidebar {height: calc( 100vh - 5em );}
+    </style>
+
+    <div class="d-flex">
+        <div id="collapse-sidebar" class="collapse show">
+            <div class="card overflow-scroll sidebar">
+                <div class="card-header text-center">
+                    <h5 class="fw-bold">{{ route.name }}</h5>
+                    <h6 class="card-subtitle text-muted">Please select one of the routes below</h6>
+                </div>
+                <div class="card-body">
+                    <strong>Distance(s)</strong>
+                    <ul class="list-group mb-5">
+                        {% if route.routeCollection is not empty %}
+                            {% for routeItem in route.routeCollection.routes %}
+                                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ route == routeItem ? 'active' : '' }}" href="{{ path('route_view', {'slug': routeItem.slug}) }}">
+                                    {{ routeItem.distance }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                {{ route.distance }}
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="list-group mb-5">
+                        <a href="{{ path('route_pdf', {slug: route.slug}) }}" type="button" class="list-group-item list-group-item-action active" aria-current="true">
+                            Print {{ route.distance }} Cuesheet
+                        </a>
+                    </div>
+
+                    <h5 class="card-title">Cuesheet</h5>
+                    <div class="list-group list-group-flush ps-0">
+                        {% set coursePoints = route.jsonRoute.route.course_points %}
+                        {% for cue in coursePoints %}
+                            {% if coursePoints[(loop.index0-1)] is defined %}
+                                {% set cum = cue.d - coursePoints[(loop.index0-1)].d %}
+                            {% else %}
+                                {% set cum = 0 %}
+                            {% endif %}
+                            <div class="list-group-item d-flex direction" data-latitude="{{ cue.x }}" data-longitude="{{ cue.y }}" data-directions="{{ cue.n }}">
+                                <div class="flex-shrink-1">
+                                    <span class="badge bg-primary">{{ cue.t }}</span>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    {{ cue.n }}
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <span class="badge text-bg-light">{{ (cum/1609)|round(2) }}mi</span>
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <span class="badge text-bg-dark">{{ (cue.d/1609)|round(2) }}mi</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+{#                    <h5 class="card-title mt-5">Safety</h5>#}
+{#                    <h5 class="card-title mt-5">Lit</h5>#}
+{#                    <h5 class="card-title mt-5">Bathrooms</h5>#}
+{#                    <h5 class="card-title mt-5">Hills</h5>#}
+{#                    <h5 class="card-title mt-5">Flat</h5>#}
+{#                    <h5 class="card-title mt-5">Comments</h5>#}
+                </div>
+
+            </div>
+        </div>
+
+        <div id="map"></div>
+
+    </div>
+
+
+    <script>
+        var map = L.map('map').setView([37.9963535,-87.6138192], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        fetch('{{ path('route_geojson', {slug: route.slug}) }}')
+            .then((response) => response.json())
+            .then(function (data) {
+                L.geoJSON(data.geojson, {
+                    pointToLayer: function(feature, latlng) {
+                        var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
+
+                        if (feature.properties.name == 'start') {
+                            marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
+                        }
+
+                        return marker;
+                    }
+                }).addTo(map);
+
+                let bbox = data.geojson.features[0].bbox;
+
+                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+            });
+
+        let directionLists = document.querySelectorAll(".direction");
+
+        directionLists.forEach(function(item) {
+            item.addEventListener('mouseenter', function(event) {
+                    map.closePopup();
+                    latitude = event.target.getAttribute('data-latitude');
+                    longitude = event.target.getAttribute('data-longitude');
+                    directions = event.target.getAttribute('data-directions');
+                    console.log(latitude, longitude, directions);
+
+                    L.popup()
+                        .setLatLng([longitude, latitude])
+                        .setContent(directions)
+                        .openOn(map);
+            });
+        });
+
+        directionLists.forEach(function(item) {
+            item.addEventListener('mouseleave', function(event) {
+                map.closePopup();
+            });
+        });
+
+        const button = document.getElementById('collapse-navigation');
+
+        button.addEventListener('click', function(event){
+            setTimeout(function(){
+                map.invalidateSize(true);
+                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+            }, 400);
+        });
+    </script>
+{% endblock %}

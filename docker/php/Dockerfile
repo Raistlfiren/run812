@@ -1,10 +1,10 @@
-FROM php:8.0-fpm-alpine
+FROM php:8.1-fpm-alpine
 
 # Install DB driver for PHP => pdo pdo_mysql
 RUN set -xe \
     && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
-    && apk add git bash \
-    && docker-php-ext-install pdo pdo_mysql \
+    && apk add git bash libpng libpng-dev \
+    && docker-php-ext-install pdo pdo_mysql gd \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && rm -rf /usr/share/php \
@@ -19,7 +19,7 @@ RUN set -xe \
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 RUN curl -L https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
 # RUN curl --show-error --silent https://getcomposer.org/installer | php -- \
 #    --install-dir=/usr/bin --filename=composer && chmod +x /usr/bin/composer && composer install -v

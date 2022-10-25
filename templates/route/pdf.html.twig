@@ -1,0 +1,88 @@
+{% extends 'base-empty.html.twig' %}
+
+{% block body %}
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 2px;
+        }
+
+        tr th {
+            font-size: 12px;
+            background-color: #bdbdbd;
+        }
+
+        td.directions {
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+    {# If the route is less than five lines then don't add multiple columns... #}
+    {% if route.course_points|length <= 5 %}
+        <table>
+            <tr>
+                <th>Turn</th>
+                <th>Next</th>
+                <th>Road</th>
+                <th>Dist</th>
+            </tr>
+            {% for cue in route.course_points %}
+                {% if route.course_points[(loop.index0-1)] is defined %}
+                    {% set cum = cue.d - route.course_points[(loop.index0-1)].d %}
+                {% else %}
+                    {% set cum = 0 %}
+                {% endif %}
+                <tr>
+                    <td>{{ cue.t|cleanTurnDirection }}</td>
+                    <td>{{ (cum/1609)|round(2) }}</td>
+                    <td class="directions">{{ cue.n|cleanDirections }}</td>
+                    <td>{{ (cue.d/1609)|round(2) }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        {% set totalItems = (route.course_points|length/2)|round %}
+        {% set counter = 0 %}
+
+        <div style="width: 100%;">
+        {% for cue in route.course_points|batch(totalItems) %}
+            <div style="width:45%;float:left;padding-left:5%;">
+                <table>
+                    <tr>
+                        <th>Turn</th>
+                        <th>Next</th>
+                        <th>Road</th>
+                        <th>Dist</th>
+                    </tr>
+                    {% for column in cue %}
+                        {% if route.course_points[(counter-1)] is defined %}
+                            {% set cum = column.d - route.course_points[(counter-1)].d %}
+                        {% else %}
+                            {% set cum = 0 %}
+                        {% endif %}
+                        {% set counter = counter + 1 %}
+                        <tr>
+                            <td>{{ column.t|cleanTurnDirection }}</td>
+                            <td>{{ (cum/1609)|round(2) }}</td>
+                            <td class="directions">{{ column.n|cleanDirections }}</td>
+                            <td>{{ (column.d/1609)|round(2) }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+
+{% endblock %}

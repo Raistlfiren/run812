@@ -1,0 +1,38 @@
+{
+    "devDependencies": {
+        "@fortawesome/free-regular-svg-icons": "^6.1.2",
+        "@symfony/stimulus-bridge": "^2.0.0",
+        "@symfony/webpack-encore": "^1.0.0",
+        "core-js": "^3.0.0",
+        "leaflet.bigimage": "^1.0.1",
+        "regenerator-runtime": "^0.13.2",
+        "stimulus": "^3.0.1",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@babel/preset-react": "^7.14.5",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
+        "@fortawesome/react-fontawesome": "^0.1.14",
+        "axios": "^0.24.0",
+        "bootstrap": "^5.2.1",
+        "dayjs": "^1.10.5",
+        "leaflet": "^1.7.1",
+        "prop-types": "^15.7.2",
+        "react": "^17.0.2",
+        "react-bootstrap": "^2.0.2",
+        "react-dom": "^17.0.2",
+        "react-leaflet": "^3.2.0",
+        "react-router-dom": "^6.0.2",
+        "sass": "^1.35.1",
+        "sass-loader": "^12.1.0"
+    }
+}
