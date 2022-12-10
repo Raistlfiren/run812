@@ -2,6 +2,7 @@ import Shuffle from 'shufflejs';
 import {Modal} from "bootstrap/dist/js/bootstrap.bundle";
 import L from "leaflet";
 import './vendor/rSlider';
+import "../styles/homepage.scss";
 
 const shuffleInstance = new Shuffle(document.getElementById('routeContainer'), {
     itemSelector: '.grid-item'

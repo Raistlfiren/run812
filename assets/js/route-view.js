@@ -1,3 +1,4 @@
+import "../styles/route-view.scss";
 import L from "leaflet";
 
 document.addEventListener('DOMContentLoaded', function(event) {
