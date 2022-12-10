@@ -16,7 +16,7 @@
         <div class="container">
             <hr />
             <div class="row">
-                <div class="col">
+                <div class="mb-5 col-md-4 col-sm-12">
                     <p class="form-label fw-bold">General Location of Route</p>
                     {% for location in locations %}
                         <div class="form-check form-check-inline">
@@ -25,11 +25,11 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="col">
+                <div class="mb-5 col-md-4 col-sm-12">
                     <label for="routeNameSearch" class="form-label fw-bold">Route Name</label>
                     <input type="text" class="form-control" id="routeNameSearch">
                 </div>
-                <div class="col">
+                <div class="col-md-4 col-sm-12">
                     <label for="distanceSearch" class="form-label fw-bold">Route Distance</label>
                     <input type="text" class="form-control" data-min={{ minDistance.0.distance }} data-max={{ maxdistance.0.distance }} id="distanceSearch">
                 </div>
@@ -44,7 +44,7 @@
 
                 {% for route in routes %}
                     {% if route.routeCollection is empty %}
-                        <div class="grid-item col-4"
+                        <div class="grid-item col-md-4 col-sm-12"
                              data-locations="{{ route.getFlatLocations }}"
                              data-name="{{ route.name }}"
                              data-distance="{{ route.distance }}"
@@ -73,7 +73,7 @@
                         </div>
                     {% else %}
                         {% if routeCollectionName != route.routeCollection.name %}
-                            <div class="grid-item col-4"
+                            <div class="grid-item col-md-4 col-sm-12"
                                  data-locations="{{ route.routeCollection.locations|join(', ') }}"
                                  data-name="{{ route.routeCollection.name }}"
                                  data-distance="{{ route.routeCollection.distances|join(', ') }}"

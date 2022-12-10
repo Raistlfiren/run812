@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             }).addTo(map);
 
             let bbox = data.geojson.features[0].bbox;
+            window.bbox = bbox;
 
             map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
         });
@@ -53,10 +54,11 @@ document.addEventListener('DOMContentLoaded', function(event) {
         });
     });
 
-    const button = document.getElementById('collapse-navigation');
+    const button = document.getElementById('sidebar-button');
 
     button.addEventListener('click', function(event){
         setTimeout(function(){
+            let bbox = window.bbox;
             map.invalidateSize(true);
             map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
         }, 400);

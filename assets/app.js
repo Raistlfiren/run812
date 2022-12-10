@@ -4,6 +4,8 @@ import {faStar as faStarSolid} from '@fortawesome/free-solid-svg-icons';
 import {faStar as faStarRegular} from '@fortawesome/free-regular-svg-icons';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+require('bootstrap');
 /* This code is needed to properly load the images in the Leaflet CSS */
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
