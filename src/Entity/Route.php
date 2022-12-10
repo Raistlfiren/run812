@@ -147,6 +147,17 @@ class Route implements UuidInterface, SluggableInterface
         return $this;
     }
 
+    public function getFlatLocations()
+    {
+        $locations = [];
+
+        foreach ($this->locations as $location) {
+            $locations[] = $location->getTitle();
+        }
+
+        return implode(", ",array_unique($locations));
+    }
+
     /**
      * @return ArrayCollection|Collection
      */
@@ -219,6 +230,11 @@ class Route implements UuidInterface, SluggableInterface
         $this->id = $id;
 
         return $this;
+    }
+
+    public function getTitle()
+    {
+        return $this->name . ' ' . $this->distance;
     }
 
     /**

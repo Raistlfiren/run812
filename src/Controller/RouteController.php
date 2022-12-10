@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/route', name: 'route_')]
+#[Route('/routes', name: 'route_')]
 class RouteController extends AbstractController
 {
     private RouteRepository $routeRepository;
@@ -38,6 +38,27 @@ class RouteController extends AbstractController
         ]);
     }
 
+    #[Route('/saturday', name: 'saturday')]
+    #[Template('route/view.html.twig')]
+    public function saturday(Request $request)
+    {
+        $routeCollection = $this->routeCollectionRepository->findOneBy(['saturdayRoute' => true]);
+        $closestSaturday = (new \DateTime())->modify('next Saturday');
+
+        if ($routeCollection) {
+            $route = $routeCollection->getRoutes()[0];
+        }
+
+        if (empty($route)) {
+            return $this->redirectToRoute('routes_index');
+        }
+
+        return [
+            'route' => $route,
+            'closestSaturday' => $closestSaturday
+        ];
+    }
+
     #[Route('/{slug}', name: 'view')]
     #[Template]
     public function view(Request $request, $slug)
@@ -58,12 +79,12 @@ class RouteController extends AbstractController
     }
 
     #[Route('/{slug}/pdf', name: 'pdf')]
-    #[Template('default/pdf.html.twig')]
+    #[Template()]
     public function pdf(RouteRepository $routeRepository, $slug)
     {
         $route = $routeRepository->findOneBy(['slug' => $slug]);
 
-        $pdfHTML = $this->renderView('default/pdf.html.twig', [
+        $pdfHTML = $this->renderView('route/pdf.html.twig', [
             'route' => $route->getJsonRoute()['route']
         ]);
 

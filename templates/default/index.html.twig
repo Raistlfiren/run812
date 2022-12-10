@@ -1,45 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-          crossorigin=""/>
+    {% block stylesheets %}
+        {{ parent() }}
+        {{ encore_entry_link_tags('homepage') }}
+    {% endblock %}
 
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-            crossorigin=""></script>
-
-    <style>
-        .maps {
-            height: 250px;
-        }
-    </style>
-
-    <script>
-        const maps = {};
-    </script>
+    {% block javascripts %}
+        {{ parent() }}
+        {{ encore_entry_script_tags('homepage') }}
+    {% endblock %}
 
     <section class="py-5">
-        <h1 class="fw-light text-center">Filter routes</h1>
+        <h1 class="fw-light text-center">Filter Routes</h1>
         <div class="container">
+            <hr />
             <div class="row">
                 <div class="col">
-                    <label for="nameSearch" class="form-label">Area</label>
+                    <p class="form-label fw-bold">General Location of Route</p>
                     {% for location in locations %}
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                            <label class="form-check-label" for="inlineCheckbox1">{{ location.title }}</label>
+                            <input class="form-check-input" type="checkbox" id="{{ location.uuid }}" name="locations" value="{{ location.title }}">
+                            <label class="form-check-label" for="{{ location.uuid }}" data-filter="{{ location.title }}">{{ location.title }}</label>
                         </div>
                     {% endfor %}
-
                 </div>
                 <div class="col">
-                    <label for="nameSearch" class="form-label">Route Name</label>
-                    <input type="text" class="form-control" id="nameSearch">
+                    <label for="routeNameSearch" class="form-label fw-bold">Route Name</label>
+                    <input type="text" class="form-control" id="routeNameSearch">
                 </div>
                 <div class="col">
-                    <label for="distanceSearch" class="form-label">Distance</label>
+                    <label for="distanceSearch" class="form-label fw-bold">Route Distance</label>
                     <input type="text" class="form-control" data-min={{ minDistance.0.distance }} data-max={{ maxdistance.0.distance }} id="distanceSearch">
                 </div>
             </div>
@@ -48,103 +39,69 @@
     </section>
     <div class="py-5 bg-light">
         <div class="container">
-            <div class="row gy-3">
+            <div id="routeContainer" class="row gy-3 grid">
                 {% set routeCollectionName = '' %}
 
                 {% for route in routes %}
                     {% if route.routeCollection is empty %}
-                        <div class="col-4">
+                        <div class="grid-item col-4"
+                             data-locations="{{ route.getFlatLocations }}"
+                             data-name="{{ route.name }}"
+                             data-distance="{{ route.distance }}"
+                             data-slug="{{ route.slug }}"
+                             data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"
+                        >
                             <div class="card">
                                 <div class="card-header">
-                                    {{ route.name }}
+                                    <span class="fw-bold">{{ route.name }}</span>
                                 </div>
-                                <div class="card-body text-center">
-                                    <p id="map-{{ route.slug }}" class="maps"></p>
-                                    <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">View Route</a>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <div class="col justify-content-start">
-                                            <span class="badge bg-primary">{{ route.distance }}</span>
-                                        </div>
-                                        <div class="col justify-content-end text-end">
-                                            <span class="badge bg-secondary">eastside</span>
-                                            <span class="badge bg-secondary">westside</span>
-                                        </div>
-                                    </div>
-
+                                <div class="card-body">
+                                    <p id="map-{{ route.slug }}" class="maps text-center"></p>
+                                    <p><strong>Distance</strong></p>
+                                    <p>
+                                        <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">{{ route.distance }}</a>
+                                    </p>
+                                    <p><strong>Locations</strong></p>
+                                    <p>
+                                        {% for location in route.locations %}
+                                            <span class="btn btn-secondary">{{ location.title }}</span>
+                                        {% endfor %}
+                                    </p>
+                                    <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary d-block text-center">View Route</a>
                                 </div>
                             </div>
                         </div>
-                        <script>
-                            maps['map-{{ route.slug }}'] = L.map('map-{{ route.slug }}', {zoomControl: false}).setView([37.9963535,-87.6138192], 12);
-
-                            fetch('{{ path('route_geojson', {slug: route.slug}) }}')
-                                .then((response) => response.json())
-                                .then(function (data) {
-                                    let map = maps['map-'+data.slug];
-
-                                    L.geoJSON(data.geojson, {
-                                        pointToLayer: function(feature, latlng) {
-                                            var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
-
-                                            if (feature.properties.name == 'start') {
-                                                marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
-                                            }
-
-                                            return marker;
-                                        }
-                                    }).addTo(map);
-
-                                    let bbox = data.geojson.features[0].bbox;
-
-                                    map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-                                });
-                        </script>
                     {% else %}
                         {% if routeCollectionName != route.routeCollection.name %}
-                            <div class="col-4">
+                            <div class="grid-item col-4"
+                                 data-locations="{{ route.routeCollection.locations|join(', ') }}"
+                                 data-name="{{ route.routeCollection.name }}"
+                                 data-distance="{{ route.routeCollection.distances|join(', ') }}"
+                                 data-slug="{{ route.slug }}"
+                                 data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"
+                            >
                                 <div class="card">
                                     <div class="card-header">
-                                        {{ route.routeCollection.name }}
+                                        <span class="fw-bold">{{ route.routeCollection.name }}</span>
                                     </div>
-                                    <div class="card-body text-center">
-                                        <p id="map-{{ route.slug }}" class="maps"></p>
-                                        <a href="{{ path('route_view', {'slug': route.routeCollection.slug}) }}" class="btn btn-primary">View Route</a>
-                                    </div>
-                                    <div class="card-footer">
-                                        {% for routeItem in route.routeCollection.routes %}
-                                            <span class="badge bg-primary">{{ routeItem.distance }}</span>
-                                        {% endfor %}
+                                    <div class="card-body">
+                                        <p id="map-{{ route.slug }}" class="maps text-center"></p>
+                                        <p><strong>Distances</strong></p>
+                                        <p>
+                                            {% for routeItem in route.routeCollection.routes %}
+                                                <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">{{ routeItem.distance }}</a>
+                                            {% endfor %}
+                                        </p>
+                                        <p><strong>Locations</strong></p>
+                                        <p>
+                                            {% for location in route.routeCollection.locations %}
+                                                <span class="btn btn-secondary">{{ location }}</span>
+                                            {% endfor %}
+                                        </p>
+                                        <a href="{{ path('route_view', {'slug': route.routeCollection.slug}) }}" class="btn btn-primary text-center d-block">View Route</a>
                                     </div>
                                 </div>
                             </div>
-
-                            <script>
-                                maps['map-{{ route.slug }}'] = L.map('map-{{ route.slug }}', {zoomControl: false}).setView([37.9963535,-87.6138192], 12);
-
-                                fetch('{{ path('route_geojson', {slug: route.slug}) }}')
-                                    .then((response) => response.json())
-                                    .then(function (data) {
-                                        let map = maps['map-'+data.slug];
-
-                                        L.geoJSON(data.geojson, {
-                                            pointToLayer: function(feature, latlng) {
-                                                var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
-
-                                                if (feature.properties.name == 'start') {
-                                                    marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
-                                                }
-
-                                                return marker;
-                                            }
-                                        }).addTo(map);
-
-                                        let bbox = data.geojson.features[0].bbox;
-
-                                        map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-                                    });
-                            </script>
                         {% endif %}
                         {% set routeCollectionName = route.routeCollection.name %}
                     {% endif %}
@@ -153,4 +110,24 @@
         </div>
 
     </div>
+
+    {% if closestSaturday is not empty %}
+        <div id="saturdayModal" data-bs-backdrop="static" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Saturday Route</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Hey! Please consider joining us for our Saturday route on {{ closestSaturday|date('F j') }}.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="{{ path('route_saturday') }}" type="button" class="btn btn-primary">View Saturday Route</a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

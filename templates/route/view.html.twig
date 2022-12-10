@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-          integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-          crossorigin=""/>
+    {% block stylesheets %}
+        {{ parent() }}
+        {{ encore_entry_link_tags('route-view') }}
+    {% endblock %}
 
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-            crossorigin=""></script>
-
+    {% block javascripts %}
+        {{ parent() }}
+        {{ encore_entry_script_tags('route-view') }}
+    {% endblock %}
     <style>
         #map { height: calc( 100vh - 5em ); width: auto; flex-grow: 1;}
         .sidebar {height: calc( 100vh - 5em );}
@@ -81,69 +81,7 @@
             </div>
         </div>
 
-        <div id="map"></div>
+        <div id="map" data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"></div>
 
     </div>
-
-
-    <script>
-        var map = L.map('map').setView([37.9963535,-87.6138192], 12);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
-
-        fetch('{{ path('route_geojson', {slug: route.slug}) }}')
-            .then((response) => response.json())
-            .then(function (data) {
-                L.geoJSON(data.geojson, {
-                    pointToLayer: function(feature, latlng) {
-                        var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
-
-                        if (feature.properties.name == 'start') {
-                            marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
-                        }
-
-                        return marker;
-                    }
-                }).addTo(map);
-
-                let bbox = data.geojson.features[0].bbox;
-
-                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-            });
-
-        let directionLists = document.querySelectorAll(".direction");
-
-        directionLists.forEach(function(item) {
-            item.addEventListener('mouseenter', function(event) {
-                    map.closePopup();
-                    latitude = event.target.getAttribute('data-latitude');
-                    longitude = event.target.getAttribute('data-longitude');
-                    directions = event.target.getAttribute('data-directions');
-                    console.log(latitude, longitude, directions);
-
-                    L.popup()
-                        .setLatLng([longitude, latitude])
-                        .setContent(directions)
-                        .openOn(map);
-            });
-        });
-
-        directionLists.forEach(function(item) {
-            item.addEventListener('mouseleave', function(event) {
-                map.closePopup();
-            });
-        });
-
-        const button = document.getElementById('collapse-navigation');
-
-        button.addEventListener('click', function(event){
-            setTimeout(function(){
-                map.invalidateSize(true);
-                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-            }, 400);
-        });
-    </script>
 {% endblock %}

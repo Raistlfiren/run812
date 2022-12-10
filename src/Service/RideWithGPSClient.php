@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Route;
-use App\Entity\RouteCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -35,7 +34,7 @@ class RideWithGPSClient
         $connection = $this->em->getConnection();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=0')->executeQuery();
         $connection->prepare('TRUNCATE TABLE route')->executeQuery();
-        $connection->prepare('TRUNCATE TABLE route_collection')->executeQuery();
+//        $connection->prepare('TRUNCATE TABLE route_collection')->executeQuery();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=1')->executeQuery();
 
         $response = $this->client->request(
@@ -102,17 +101,17 @@ class RideWithGPSClient
                 $this->em->persist($routeEntity);
             }
 
-            foreach ($routeCollections as $name => $routeCollection) {
-                if (count($routeCollection) > 1) {
-                    $routeC = new RouteCollection();
-                    $routeC->setName($name);
-                    foreach ($routeCollection as $route) {
-                        $route->setRouteCollection($routeC);
-                    }
-
-                    $this->em->persist($routeC);
-                }
-            }
+//            foreach ($routeCollections as $name => $routeCollection) {
+//                if (count($routeCollection) > 1) {
+//                    $routeC = new RouteCollection();
+//                    $routeC->setName($name);
+//                    foreach ($routeCollection as $route) {
+//                        $route->setRouteCollection($routeC);
+//                    }
+//
+//                    $this->em->persist($routeC);
+//                }
+//            }
         }
 
         $this->em->flush();

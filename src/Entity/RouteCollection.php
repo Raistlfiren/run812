@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Doctrine\EntityIdAndUuid;
 use App\Doctrine\UuidInterface;
-use App\Repository\RouteRepository;
+use App\Repository\RouteCollectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
  * @package App\Entity
  *
  */
-#[Entity(repositoryClass: RouteRepository::class)]
+#[Entity(repositoryClass: RouteCollectionRepository::class)]
 class RouteCollection implements UuidInterface, SluggableInterface
 {
     use EntityIdAndUuid;
@@ -31,6 +31,10 @@ class RouteCollection implements UuidInterface, SluggableInterface
      */
     #[Column(type: 'string')]
     private $name;
+
+
+    #[Column(type: 'boolean')]
+    private $saturdayRoute;
 
     /**
      * @var ArrayCollection|Collection
@@ -99,6 +103,48 @@ class RouteCollection implements UuidInterface, SluggableInterface
         $this->routes->removeElement($route);
         // uncomment if you want to update other side
         $route->setRouteCollection(null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isSaturdayRoute()
+    {
+        return $this->saturdayRoute;
+    }
+
+    /**
+     * @param mixed $saturdayRoute
+     * @return RouteCollection
+     */
+    public function setSaturdayRoute($saturdayRoute)
+    {
+        $this->saturdayRoute = $saturdayRoute;
+        return $this;
+    }
+
+    public function getLocations()
+    {
+        $locations = [];
+
+        foreach ($this->routes as $route) {
+            foreach ($route->getLocations() as $location) {
+                $locations[] = $location->getTitle();
+            }
+        }
+
+        return array_unique($locations);
+    }
+
+    public function getDistances()
+    {
+        $distances = [];
+
+        foreach ($this->routes as $route) {
+            $distances[] = $route->getDistance();
+        }
+
+        return $distances;
     }
 
     /**
