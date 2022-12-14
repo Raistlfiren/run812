@@ -80,9 +80,9 @@ class RouteController extends AbstractController
 
     #[Route('/{slug}/pdf', name: 'pdf')]
     #[Template()]
-    public function pdf(RouteRepository $routeRepository, $slug)
+    public function pdf($slug)
     {
-        $route = $routeRepository->findOneBy(['slug' => $slug]);
+        $route = $this->routeRepository->findOneBy(['slug' => $slug]);
 
         $pdfHTML = $this->renderView('route/pdf.html.twig', [
             'route' => $route->getJsonRoute()['route']
