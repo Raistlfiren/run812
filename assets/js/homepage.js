@@ -62,41 +62,16 @@ checkboxes.forEach(function(checkbox) {
     })
 });
 
-const slider3 = new rSlider({
-    target: '#distanceSearch',
-    values: {min: 0, max: 24},
-    step: 2,
-    range: true,
-    set: [0, 24],
-    scale: true,
-    labels: true,
-    tooltip: false,
-    onChange: function(values) {
-        let specifiedLength = values.split(',');
-
-        shuffleInstance.filter(function (element) {
-            console.log(element);
-            let elementDistances = element.getAttribute('data-distance').split(', ');
-            let keepItem = false;
-            elementDistances.forEach(function(value) {
-                let floatValue = parseFloat(value);
-
-                if (floatValue >= parseFloat(specifiedLength[0]) && floatValue <= parseFloat(specifiedLength[1])) {
-                    keepItem = true;
-                }
-            });
-            return keepItem;
-        });
-        console.log(values);
-    }
-});
-
 var myModal = new Modal(document.getElementById('saturdayModal'));
 myModal.show();
 
 document.addEventListener('DOMContentLoaded', function(event) {
     const maps = {};
     const routeCards = document.querySelectorAll(".grid-item");
+    const distanceSlider = document.getElementById('distanceSearch');
+    const minDistance = Math.round(Math.floor(distanceSlider.getAttribute('data-min')));
+    const maxDistance = Math.round(Math.ceil(distanceSlider.getAttribute('data-max')));
+
     routeCards.forEach(function (element) {
         let routeSlug = element.getAttribute('data-slug');
         let routeGeoJSONPath = element.getAttribute('data-geojson-path');
@@ -124,5 +99,34 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
                 map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
             });
+    });
+
+    const slider3 = new rSlider({
+        target: '#distanceSearch',
+        values: {min: minDistance, max: maxDistance},
+        step: 2,
+        range: true,
+        set: [minDistance, maxDistance],
+        scale: true,
+        labels: true,
+        tooltip: false,
+        onChange: function(values) {
+            let specifiedLength = values.split(',');
+
+            shuffleInstance.filter(function (element) {
+                console.log(element);
+                let elementDistances = element.getAttribute('data-distance').split(', ');
+                let keepItem = false;
+                elementDistances.forEach(function(value) {
+                    let floatValue = parseFloat(value);
+
+                    if (floatValue >= parseFloat(specifiedLength[0]) && floatValue <= parseFloat(specifiedLength[1])) {
+                        keepItem = true;
+                    }
+                });
+                return keepItem;
+            });
+            console.log(values);
+        }
     });
 });
