@@ -64,7 +64,7 @@
                                     <p><strong>Locations</strong></p>
                                     <p>
                                         {% for location in route.locations %}
-                                            <span class="btn btn-secondary">{{ location.title }}</span>
+                                            <span class="badge bg-secondary">{{ location.title }}</span>
                                         {% endfor %}
                                     </p>
                                     <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary d-block text-center">View Route</a>
@@ -95,7 +95,7 @@
                                         <p><strong>Locations</strong></p>
                                         <p>
                                             {% for location in route.routeCollection.locations %}
-                                                <span class="btn btn-secondary">{{ location }}</span>
+                                                <span class="badge bg-secondary">{{ location }}</span>
                                             {% endfor %}
                                         </p>
                                         <a href="{{ path('route_view', {'slug': route.routeCollection.slug}) }}" class="btn btn-primary text-center d-block">View Route</a>
