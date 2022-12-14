@@ -4,73 +4,74 @@ import L from "leaflet";
 import './vendor/rSlider';
 import "../styles/homepage.scss";
 
-const shuffleInstance = new Shuffle(document.getElementById('routeContainer'), {
-    itemSelector: '.grid-item'
-});
-
-// use value of search field to filter
-var quicksearch = document.getElementById('routeNameSearch');
-quicksearch.addEventListener( 'keyup', debounce( function() {
-    // qsRegex = new RegExp( quicksearch.value, 'gi' );
-    shuffleInstance.filter(function (element) {
-        const titleElement = element.getAttribute('data-name');
-        const titleText = titleElement.toLowerCase().trim();
-        return titleText.indexOf(quicksearch.value.toLowerCase()) !== -1;
-    })
-}, 200 ) );
-
-// debounce so filtering doesn't happen every millisecond
-function debounce( fn, threshold ) {
-    var timeout;
-    threshold = threshold || 100;
-    return function debounced() {
-        clearTimeout( timeout );
-        var args = arguments;
-        var _this = this;
-        function delayed() {
-            fn.apply( _this, args );
-        }
-        timeout = setTimeout( delayed, threshold );
-    };
-}
-
-var checkboxes = document.querySelectorAll("input[type=checkbox][name=locations]");
-let checkedLocations = []
-
-checkboxes.forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        checkedLocations =
-            Array.from(checkboxes) // Convert checkboxes to an array to use filter and map.
-                .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
-                .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
-        console.log(checkedLocations);
-
-        shuffleInstance.filter(function (element) {
-            console.log(element);
-            let elementLocations = element.getAttribute('data-locations').split(', ');
-            let keepItem = false;
-            if (checkedLocations.length > 0) {
-                checkedLocations.forEach(function(value) {
-                    console.log(elementLocations);
-                    keepItem = elementLocations.includes(value);
-                });
-            } else {
-                keepItem = true;
-            }
-            return keepItem;
-        });
-    })
-});
-
-var myModal = new Modal(document.getElementById('saturdayModal'));
-myModal.show();
-
 document.addEventListener('DOMContentLoaded', function(event) {
     const maps = {};
     const routeCards = document.querySelectorAll(".grid-item");
     const distanceSlider = document.getElementById('distanceSearch');
     const minDistance = Math.round(Math.floor(distanceSlider.getAttribute('data-min')));
     const maxDistance = Math.round(Math.ceil(distanceSlider.getAttribute('data-max')));
+
+
+    const shuffleInstance = new Shuffle(document.getElementById('routeContainer'), {
+        itemSelector: '.grid-item'
+    });
+
+    // use value of search field to filter
+    const quicksearch = document.getElementById('routeNameSearch');
+    quicksearch.addEventListener( 'keyup', debounce( function() {
+        // qsRegex = new RegExp( quicksearch.value, 'gi' );
+        shuffleInstance.filter(function (element) {
+            const titleElement = element.getAttribute('data-name');
+            const titleText = titleElement.toLowerCase().trim();
+            return titleText.indexOf(quicksearch.value.toLowerCase()) !== -1;
+        })
+    }, 200 ) );
+
+    // debounce so filtering doesn't happen every millisecond
+    function debounce( fn, threshold ) {
+        var timeout;
+        threshold = threshold || 100;
+        return function debounced() {
+            clearTimeout( timeout );
+            var args = arguments;
+            var _this = this;
+            function delayed() {
+                fn.apply( _this, args );
+            }
+            timeout = setTimeout( delayed, threshold );
+        };
+    }
+
+    const checkboxes = document.querySelectorAll("input[type=checkbox][name=locations]");
+    let checkedLocations = []
+
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            checkedLocations =
+                Array.from(checkboxes) // Convert checkboxes to an array to use filter and map.
+                    .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
+                    .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
+            // console.log(checkedLocations);
+
+            shuffleInstance.filter(function (element) {
+                console.log(element);
+                let elementLocations = element.getAttribute('data-locations').split(', ');
+                let keepItem = false;
+                if (checkedLocations.length > 0) {
+                    checkedLocations.forEach(function(value) {
+                        // console.log(elementLocations);
+                        keepItem = elementLocations.includes(value);
+                    });
+                } else {
+                    keepItem = true;
+                }
+                return keepItem;
+            });
+        })
+    });
+
+    const myModal = new Modal(document.getElementById('saturdayModal'));
+    myModal.show();
 
     routeCards.forEach(function (element) {
         let routeSlug = element.getAttribute('data-slug');
@@ -114,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             let specifiedLength = values.split(',');
 
             shuffleInstance.filter(function (element) {
-                console.log(element);
+                // console.log(element);
                 let elementDistances = element.getAttribute('data-distance').split(', ');
                 let keepItem = false;
                 elementDistances.forEach(function(value) {
@@ -126,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 });
                 return keepItem;
             });
-            console.log(values);
+            // console.log(values);
         }
     });
 });

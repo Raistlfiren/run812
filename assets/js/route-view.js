@@ -3,7 +3,7 @@ import L from "leaflet";
 
 document.addEventListener('DOMContentLoaded', function(event) {
     const mapElement = document.getElementById('map');
-    var map = L.map('map').setView([37.9963535,-87.6138192], 12);
+    const map = L.map('map').setView([37.9963535,-87.6138192], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
             let latitude = event.target.getAttribute('data-latitude');
             let longitude = event.target.getAttribute('data-longitude');
             let directions = event.target.getAttribute('data-directions');
-            console.log(latitude, longitude, directions);
+            // console.log(latitude, longitude, directions);
 
             L.popup()
                 .setLatLng([longitude, latitude])
