@@ -37,6 +37,16 @@
         </div>
 
     </section>
+
+    {% if closestSaturday is not empty %}
+        <section class="py-2">
+            <div class="alert alert-danger container text-center" role="alert">
+                    Hey! Please consider joining us for our Saturday route on {{ closestSaturday|date('F j') }}.
+                    <a href="{{ path('route_saturday') }}" class="alert-link">View Saturday Route</a>
+            </div>
+        </section>
+    {% endif %}
+
     <div class="py-5 bg-light">
         <div class="container">
             <div id="routeContainer" class="row gy-3 grid">
@@ -111,23 +121,23 @@
 
     </div>
 
-    {% if closestSaturday is not empty %}
-        <div id="saturdayModal" data-bs-backdrop="static" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Saturday Route</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Hey! Please consider joining us for our Saturday route on {{ closestSaturday|date('F j') }}.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="{{ path('route_saturday') }}" type="button" class="btn btn-primary">View Saturday Route</a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+{#    {% if closestSaturday is not empty %}#}
+{#        <div id="saturdayModal" data-bs-backdrop="static" class="modal" tabindex="-1" role="dialog">#}
+{#            <div class="modal-dialog modal-dialog-centered" role="document">#}
+{#                <div class="modal-content">#}
+{#                    <div class="modal-header">#}
+{#                        <h5 class="modal-title">Saturday Route</h5>#}
+{#                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                    </div>#}
+{#                    <div class="modal-body">#}
+{#                        <p>Hey! Please consider joining us for our Saturday route on {{ closestSaturday|date('F j') }}.</p>#}
+{#                    </div>#}
+{#                    <div class="modal-footer">#}
+{#                        <a href="{{ path('route_saturday') }}" type="button" class="btn btn-primary">View Saturday Route</a>#}
+{#                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
 {% endblock %}

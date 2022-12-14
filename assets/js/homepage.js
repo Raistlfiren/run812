@@ -1,5 +1,4 @@
 import Shuffle from 'shufflejs';
-import {Modal} from "bootstrap/dist/js/bootstrap.bundle";
 import L from "leaflet";
 import './vendor/rSlider';
 import "../styles/homepage.scss";
@@ -70,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
         })
     });
 
-    const myModal = new Modal(document.getElementById('saturdayModal'));
-    myModal.show();
+    // const myModal = new Modal(document.getElementById('saturdayModal'));
+    // myModal.show();
 
     routeCards.forEach(function (element) {
         let routeSlug = element.getAttribute('data-slug');
