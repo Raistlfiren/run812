@@ -26,18 +26,14 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/', name: 'home')]
-    #[Route('/routes', name: 'route_index')]
     #[Template]
     public function index(Request $request, LocationRepository $locationRepository)
     {
         $closestSaturday = null;
-        $saturdayRoute = null;
 
-        if ($request->attributes->get('_route') === 'home') {
-            $saturdayRoute = $this->routeCollectionRepository->findOneBy(['saturdayRoute' => true]);
-            if ($saturdayRoute) {
-                $closestSaturday = (new \DateTime())->modify('next Saturday');
-            }
+        $saturdayRoute = $this->routeCollectionRepository->findOneBy(['saturdayRoute' => true]);
+        if ($saturdayRoute) {
+            $closestSaturday = (new \DateTime())->modify('next Saturday');
         }
 
         $locations = $locationRepository->findBy([], ['title' => 'asc']);
