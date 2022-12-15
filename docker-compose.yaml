@@ -23,7 +23,7 @@ services:
       - "3306:3306"
   php:
     container_name: php
-    user: 1000:1000 # rw access
+#    user: 1000:1000 # rw access
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile

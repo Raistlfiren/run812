@@ -3,7 +3,8 @@ FROM php:8.1-fpm-alpine
 # Install DB driver for PHP => pdo pdo_mysql
 RUN set -xe \
     && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
-    && apk add git bash libpng libpng-dev \
+    && apk add --update linux-headers \
+    && apk add git bash libpng libpng-dev openssh rsync \
     && docker-php-ext-install pdo pdo_mysql gd \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
