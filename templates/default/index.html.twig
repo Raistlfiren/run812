@@ -17,7 +17,7 @@
             <hr />
             <div class="row">
                 <div class="mb-5 col-md-4 col-sm-12">
-                    <p class="form-label fw-bold">General Location of Route</p>
+                    <p class="form-label fw-bold">Location</p>
                     {% for location in locations %}
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="{{ location.uuid }}" name="locations" value="{{ location.title }}">
@@ -26,11 +26,11 @@
                     {% endfor %}
                 </div>
                 <div class="mb-5 col-md-4 col-sm-12">
-                    <label for="routeNameSearch" class="form-label fw-bold">Route Name</label>
+                    <label for="routeNameSearch" class="form-label fw-bold">Name</label>
                     <input type="text" class="form-control" id="routeNameSearch">
                 </div>
                 <div class="col-md-4 col-sm-12">
-                    <label for="distanceSearch" class="form-label fw-bold">Route Distance</label>
+                    <label for="distanceSearch" class="form-label fw-bold">Distance</label>
                     <input type="text" class="form-control" data-min={{ minDistance.0.distance }} data-max={{ maxdistance.0.distance }} id="distanceSearch">
                 </div>
             </div>
