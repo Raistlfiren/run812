@@ -9,7 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OrderBy;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
@@ -39,7 +40,8 @@ class RouteCollection implements UuidInterface, SluggableInterface
     /**
      * @var ArrayCollection|Collection
      */
-    #[OneToMany(targetEntity: Route::class, mappedBy: 'routeCollection', cascade: ['persist'])]
+    #[ManyToMany(targetEntity: Route::class, mappedBy: 'routeCollections', cascade: ['persist'])]
+    #[JoinTable(name: 'route_collections_routes')]
     #[OrderBy(['distance' => 'ASC'])]
     private $routes;
 
@@ -90,9 +92,12 @@ class RouteCollection implements UuidInterface, SluggableInterface
      */
     public function addRoute($route)
     {
+        if ($this->routes->contains($route)) {
+            return;
+        }
+
         $this->routes->add($route);
-        // uncomment if you want to update other side
-        $route->setRouteCollection($this);
+        $route->addRouteCollection($this);
     }
 
     /**
@@ -100,9 +105,12 @@ class RouteCollection implements UuidInterface, SluggableInterface
      */
     public function removeRoute($route)
     {
+        if (!$this->routes->contains($route)) {
+            return;
+        }
+
         $this->routes->removeElement($route);
-        // uncomment if you want to update other side
-        $route->setRouteCollection(null);
+        $route->removeRouteCollection($this);
     }
 
     /**

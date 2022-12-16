@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\PersistentCollection;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
 use Ramsey\Uuid\Uuid;
@@ -54,14 +54,32 @@ class Route implements UuidInterface, SluggableInterface
     #[Column(type: 'float')]
     private $distance;
 
+    /**
+     * @var float
+     */
+    #[Column(type: 'float')]
+    private $elevationGain;
+
+    /**
+     * @var float
+     */
+    #[Column(type: 'float')]
+    private $elevationLoss;
+
+    /**
+     * @var string
+     */
+    #[Column(type: 'string')]
+    private $trackType;
+
     #[Column(type: 'json')]
     private $jsonRoute;
 
     /**
      * @var RouteCollection
      */
-    #[ManyToOne(targetEntity: RouteCollection::class, inversedBy: 'routes', cascade: ['persist'])]
-    private $routeCollection;
+    #[ManyToMany(targetEntity: RouteCollection::class, inversedBy: 'routes', cascade: ['persist'])]
+    private $routeCollections;
 
     /**
      * @var ArrayCollection|Collection
@@ -73,6 +91,7 @@ class Route implements UuidInterface, SluggableInterface
     {
         $this->uuid = Uuid::uuid4();
         $this->locations = new ArrayCollection();
+        $this->routeCollections = new ArrayCollection();
     }
 
     /**
@@ -130,20 +149,20 @@ class Route implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @return RouteCollection|null
+     * @return RouteCollection|null|PersistentCollection
      */
-    public function getRouteCollection(): ?RouteCollection
+    public function getRouteCollections(): ?PersistentCollection
     {
-        return $this->routeCollection;
+        return $this->routeCollections;
     }
 
     /**
-     * @param RouteCollection $routeCollection
+     * @param RouteCollection $routeCollections
      * @return Route
      */
-    public function setRouteCollection(RouteCollection $routeCollection): Route
+    public function setRouteCollections(RouteCollection $routeCollections): Route
     {
-        $this->routeCollection = $routeCollection;
+        $this->routeCollections = $routeCollections;
         return $this;
     }
 
@@ -235,6 +254,86 @@ class Route implements UuidInterface, SluggableInterface
     public function getTitle()
     {
         return $this->name . ' ' . $this->distance;
+    }
+
+    /**
+     * @param RouteCollection $routeCollection
+     */
+    public function addRouteCollection(RouteCollection $routeCollection)
+    {
+        if ($this->routeCollections->contains($routeCollection)) {
+            return;
+        }
+
+        $this->routeCollections->add($routeCollection);
+        $routeCollection->addRoute($this);
+    }
+
+    /**
+     * @param RouteCollection $routeCollection
+     */
+    public function removeRouteCollection(RouteCollection $routeCollection)
+    {
+        if (!$this->routeCollections->contains($routeCollection)) {
+            return;
+        }
+
+        $this->routeCollections->removeElement($routeCollection);
+        $routeCollection->removeRoute($this);
+    }
+
+    /**
+     * @return float
+     */
+    public function getElevationGain(): float
+    {
+        return $this->elevationGain;
+    }
+
+    /**
+     * @param float $elevationGain
+     * @return Route
+     */
+    public function setElevationGain(float $elevationGain): Route
+    {
+        $this->elevationGain = $elevationGain;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getElevationLoss(): float
+    {
+        return $this->elevationLoss;
+    }
+
+    /**
+     * @param float $elevationLoss
+     * @return Route
+     */
+    public function setElevationLoss(float $elevationLoss): Route
+    {
+        $this->elevationLoss = $elevationLoss;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackType(): string
+    {
+        return $this->trackType;
+    }
+
+    /**
+     * @param string $trackType
+     * @return Route
+     */
+    public function setTrackType(string $trackType): Route
+    {
+        $this->trackType = $trackType;
+        return $this;
     }
 
     /**

@@ -53,7 +53,7 @@
                 {% set routeCollectionName = '' %}
 
                 {% for route in routes %}
-                    {% if route.routeCollection is empty %}
+                    {% if route.routeCollections is empty %}
                         <div class="grid-item col-md-4 col-sm-12"
                              data-locations="{{ route.getFlatLocations }}"
                              data-name="{{ route.name }}"
@@ -82,38 +82,39 @@
                             </div>
                         </div>
                     {% else %}
-                        {% if routeCollectionName != route.routeCollection.name %}
+                        {% set routeCollection = route.routeCollections.0 %}
+                        {% if routeCollectionName != routeCollection.name %}
                             <div class="grid-item col-md-4 col-sm-12"
-                                 data-locations="{{ route.routeCollection.locations|join(', ') }}"
-                                 data-name="{{ route.routeCollection.name }}"
-                                 data-distance="{{ route.routeCollection.distances|join(', ') }}"
+                                 data-locations="{{ routeCollection.locations|join(', ') }}"
+                                 data-name="{{ routeCollection.name }}"
+                                 data-distance="{{ routeCollection.distances|join(', ') }}"
                                  data-slug="{{ route.slug }}"
                                  data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"
                             >
                                 <div class="card">
                                     <div class="card-header">
-                                        <span class="fw-bold">{{ route.routeCollection.name }}</span>
+                                        <span class="fw-bold">{{ routeCollection.name }}</span>
                                     </div>
                                     <div class="card-body">
                                         <p id="map-{{ route.slug }}" class="maps text-center"></p>
                                         <p><strong>Distances</strong></p>
                                         <p>
-                                            {% for routeItem in route.routeCollection.routes %}
+                                            {% for routeItem in routeCollection.routes %}
                                                 <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">{{ routeItem.distance }}</a>
                                             {% endfor %}
                                         </p>
                                         <p><strong>Locations</strong></p>
                                         <p>
-                                            {% for location in route.routeCollection.locations %}
+                                            {% for location in routeCollection.locations %}
                                                 <span class="badge bg-secondary">{{ location }}</span>
                                             {% endfor %}
                                         </p>
-                                        <a href="{{ path('route_view', {'slug': route.routeCollection.slug}) }}" class="btn btn-primary text-center d-block">View Route</a>
+                                        <a href="{{ path('route_view', {'slug': routeCollection.slug}) }}" class="btn btn-primary text-center d-block">View Route</a>
                                     </div>
                                 </div>
                             </div>
                         {% endif %}
-                        {% set routeCollectionName = route.routeCollection.name %}
+                        {% set routeCollectionName = routeCollection.name %}
                     {% endif %}
                 {% endfor %}
             </div>

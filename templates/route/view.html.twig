@@ -21,8 +21,8 @@
                 <div class="card-body">
                     <strong>Distance(s)</strong>
                     <ul class="list-group mb-5">
-                        {% if route.routeCollection is not empty %}
-                            {% for routeItem in route.routeCollection.routes %}
+                        {% if route.routeCollections is not empty %}
+                            {% for routeItem in route.routeCollections.0.routes %}
                                 <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ route == routeItem ? 'active' : '' }}" href="{{ path('route_view', {'slug': routeItem.slug}) }}">
                                     {{ routeItem.distance }}
                                 </a>
