@@ -129,3 +129,7 @@
     border-color: #ccc;
     color: #999;
 }
+
+.rs-container .rs-scale span:last-of-type {
+    width: 0 !important;
+}

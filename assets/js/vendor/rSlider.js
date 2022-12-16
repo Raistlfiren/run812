@@ -170,7 +170,7 @@
         for (var i = 0, iLen = pieces.length; i < iLen; i++)
             createEvents(pieces[i], 'click', this.onClickPiece.bind(this));
 
-        window.addEventListener('resize', this.onResize.bind(this));
+        // window.addEventListener('resize', this.onResize.bind(this));
 
         return this.setValues();
     };
