@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class="container">
-        <a class="navbar-brand" href="{{ path('home') }}">Run/Walk 812</a>
+        <a class="navbar-brand" href="{{ path('home') }}">
+            Run/Walk 812
+        </a>
 
         {% if app.request.get('_route') == 'route_view' %}
             <button
