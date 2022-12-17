@@ -69,12 +69,12 @@
                                     <p id="map-{{ route.slug }}" class="maps text-center"></p>
                                     <p><strong>Distance</strong></p>
                                     <p>
-                                        <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">{{ route.distance }}</a>
+                                        <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary mt-1">{{ route.distance }}</a>
                                     </p>
                                     <p><strong>Locations</strong></p>
                                     <p>
                                         {% for location in route.locations %}
-                                            <span class="badge bg-secondary">{{ location.title }}</span>
+                                            <span class="badge bg-secondary mt-1">{{ location.title }}</span>
                                         {% endfor %}
                                     </p>
                                     <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary d-block text-center">View Route</a>
@@ -100,13 +100,13 @@
                                         <p><strong>Distances</strong></p>
                                         <p>
                                             {% for routeItem in routeCollection.routes %}
-                                                <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary">{{ routeItem.distance }}</a>
+                                                <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary mt-1">{{ routeItem.distance }}</a>
                                             {% endfor %}
                                         </p>
                                         <p><strong>Locations</strong></p>
                                         <p>
                                             {% for location in routeCollection.locations %}
-                                                <span class="badge bg-secondary">{{ location }}</span>
+                                                <span class="badge bg-secondary mt-1">{{ location }}</span>
                                             {% endfor %}
                                         </p>
                                         <a href="{{ path('route_view', {'slug': routeCollection.slug}) }}" class="btn btn-primary text-center d-block">View Route</a>
