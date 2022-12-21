@@ -17,10 +17,12 @@ class EventRepository extends ServiceEntityRepository
     {
         $dateTime = new \DateTime();
 
-        return $this->createQueryBuilder('e')
+        $results = $this->createQueryBuilder('e')
             ->select('e')
             ->where('e.datetime > :now')->setParameter('now', $dateTime)
             ->getQuery()
-            ->getSingleResult();
+            ->getResult();
+
+        return $results ? $results[0] : null;
     }
 }
