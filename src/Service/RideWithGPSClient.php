@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class RideWithGPSClient
@@ -13,13 +14,17 @@ class RideWithGPSClient
     private string $password;
     private string $apiKey;
     private EntityManagerInterface $em;
+    private $routesDirectory;
+    private Filesystem $filesystem;
 
     public function __construct(
         HttpClientInterface $client,
         string $rideWithGPSEmail,
         string $rideWithGPSPassword,
         string $rideWithGPSAPIKey,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        $routesDirectory,
+        Filesystem $filesystem
     )
     {
         $this->client = $client;
@@ -27,6 +32,8 @@ class RideWithGPSClient
         $this->password = $rideWithGPSPassword;
         $this->apiKey = $rideWithGPSAPIKey;
         $this->em = $em;
+        $this->routesDirectory = $routesDirectory;
+        $this->filesystem = $filesystem;
     }
 
     public function fetchRoutes()
@@ -102,6 +109,23 @@ class RideWithGPSClient
                 $routeEntity->setJsonRoute($response->toArray());
 
                 $this->em->persist($routeEntity);
+
+                $staticImageResponse = $this->client->request(
+                    'GET',
+                    'https://ridewithgps.com/routes/'.$rideWithGPSID.'/hover_preview.png',
+                    [
+                        'query' => [
+                            'version' => 2,
+                            'auth_token' => $token,
+                            'apikey' => $this->apiKey
+                        ]
+                    ]
+                );
+
+                $resourceFile = $staticImageResponse->getContent();
+
+                $filePath = $this->routesDirectory . DIRECTORY_SEPARATOR . $rideWithGPSID . '.png';
+                $this->filesystem->dumpFile($filePath, $resourceFile);
             }
 
 //            foreach ($routeCollections as $name => $routeCollection) {

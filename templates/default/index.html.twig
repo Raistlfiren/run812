@@ -63,12 +63,17 @@
                              data-slug="{{ route.slug }}"
                              data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"
                         >
-                            <div class="card">
+                            <div class="card h-100">
                                 <div class="card-header">
                                     <span class="fw-bold">{{ route.name }}</span>
                                 </div>
+                                <img class="card-img-top" src="{{ asset('/routes/' ~ route.id ~ '.png') }}" alt="{{ route.name }}" />
+
                                 <div class="card-body">
-                                    <p id="map-{{ route.slug }}" class="maps text-center"></p>
+
+{#                                    <p id="map-{{ route.slug }}" class="maps text-center">#}
+{#                                        <img class="img-fluid img-thumbnail map-thumbnails" src="{{ asset('/routes/' ~ route.id ~ '.png') }}" alt="{{ route.name }}" />#}
+{#                                    </p>#}
                                     <p><strong>Distance</strong></p>
                                     <p>
                                         <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary mt-1">{{ route.distance }}</a>
@@ -93,12 +98,16 @@
                                  data-slug="{{ route.slug }}"
                                  data-geojson-path="{{ path('route_geojson', {slug: route.slug}) }}"
                             >
-                                <div class="card">
+                                <div class="card h-100">
                                     <div class="card-header">
                                         <span class="fw-bold">{{ routeCollection.name }}</span>
                                     </div>
+                                    <img class="card-img-top" src="{{ asset('/routes/' ~ route.id ~ '.png') }}" alt="{{ route.name }}" />
+
                                     <div class="card-body">
-                                        <p id="map-{{ route.slug }}" class="maps text-center"></p>
+{#                                        <p id="map-{{ route.slug }}" class="maps text-center">#}
+{#                                            <img class="img-fluid img-thumbnail map-thumbnails" src="{{ asset('/routes/' ~ route.id ~ '.png') }}" alt="{{ route.name }}" />#}
+{#                                        </p>#}
                                         <p><strong>Distances</strong></p>
                                         <p>
                                             {% for routeItem in routeCollection.routes %}

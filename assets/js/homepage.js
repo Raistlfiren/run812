@@ -1,5 +1,4 @@
 import Shuffle from 'shufflejs';
-import L from "leaflet";
 import './vendor/rSlider';
 import "../styles/homepage.scss";
 
@@ -72,34 +71,34 @@ document.addEventListener('DOMContentLoaded', function(event) {
     // const myModal = new Modal(document.getElementById('saturdayModal'));
     // myModal.show();
 
-    routeCards.forEach(function (element) {
-        let routeSlug = element.getAttribute('data-slug');
-        let routeGeoJSONPath = element.getAttribute('data-geojson-path');
-
-        maps['map-' + routeSlug] = L.map('map-' + routeSlug, {zoomControl: false}).setView([37.9963535, -87.6138192], 12);
-
-        fetch(routeGeoJSONPath)
-            .then((response) => response.json())
-            .then(function (data) {
-                let map = maps['map-' + data.slug];
-
-                L.geoJSON(data.geojson, {
-                    pointToLayer: function (feature, latlng) {
-                        var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
-
-                        if (feature.properties.name == 'start') {
-                            marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
-                        }
-
-                        return marker;
-                    }
-                }).addTo(map);
-
-                let bbox = data.geojson.features[0].bbox;
-
-                map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-            });
-    });
+    // routeCards.forEach(function (element) {
+    //     let routeSlug = element.getAttribute('data-slug');
+    //     let routeGeoJSONPath = element.getAttribute('data-geojson-path');
+    //
+    //     maps['map-' + routeSlug] = L.map('map-' + routeSlug, {zoomControl: false}).setView([37.9963535, -87.6138192], 12);
+    //
+    //     fetch(routeGeoJSONPath)
+    //         .then((response) => response.json())
+    //         .then(function (data) {
+    //             let map = maps['map-' + data.slug];
+    //
+    //             L.geoJSON(data.geojson, {
+    //                 pointToLayer: function (feature, latlng) {
+    //                     var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
+    //
+    //                     if (feature.properties.name == 'start') {
+    //                         marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
+    //                     }
+    //
+    //                     return marker;
+    //                 }
+    //             }).addTo(map);
+    //
+    //             let bbox = data.geojson.features[0].bbox;
+    //
+    //             map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
+    //         });
+    // });
 
     const slider3 = new rSlider({
         target: '#distanceSearch',

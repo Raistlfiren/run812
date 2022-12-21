@@ -62,3 +62,7 @@ $theme-colors: (
 //@import "~bootstrap/scss/bootstrap";
 //@import "custom";
 //@import "responsive-custom.css";
+
+.map-thumbnails {
+  max-height: 250px;
+}
