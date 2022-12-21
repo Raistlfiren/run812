@@ -40,11 +40,11 @@
 
     </section>
 
-    {% if saturdayRoute is not empty %}
+    {% if scheduledRoute is not empty %}
         <section class="py-2">
             <div class="alert alert-danger container text-center" role="alert">
-                    Hey! Please consider joining us for our {{ saturdayRoute.datetime|date('l') }} route on {{ saturdayRoute.datetime|date('F j \\a\\t g:i a') }}.
-                    <a href="{{ path('route_saturday') }}" class="alert-link">View Saturday Route</a>
+                    Hey! Please consider joining us on our {{ scheduledRoute.datetime|date('l') }} route on {{ scheduledRoute.datetime|date('F j \\a\\t g:i a') }}.
+                    <a href="{{ path('route_scheduled') }}" class="alert-link">View {{ scheduledRoute.datetime|date('l') }} Route</a>
             </div>
         </section>
     {% endif %}

@@ -30,7 +30,7 @@ class DefaultController extends AbstractController
     #[Template]
     public function index(Request $request, LocationRepository $locationRepository, EventRepository $eventRepository)
     {
-        $saturdayRoute = $eventRepository->findLatestRoute();
+        $scheduledRoute = $eventRepository->findLatestRoute();
         $locations = $locationRepository->findBy([], ['title' => 'asc']);
         $routes = $this->routeRepository->findAllWithCollection();
         $minDistance = $this->routeRepository->findMinimumDistance();
@@ -41,7 +41,7 @@ class DefaultController extends AbstractController
             'locations' => $locations,
             'minDistance' => $minDistance,
             'maxdistance' => $maxDistance,
-            'saturdayRoute' => $saturdayRoute
+            'scheduledRoute' => $scheduledRoute
         ];
     }
 }

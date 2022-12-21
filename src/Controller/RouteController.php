@@ -40,16 +40,16 @@ class RouteController extends AbstractController
         ]);
     }
 
-    #[Route('/saturday', name: 'saturday')]
+    #[Route('/scheduled', name: 'scheduled')]
     #[Template('route/view.html.twig')]
-    public function saturday(Request $request, EventRepository $eventRepository)
+    public function scheduled(Request $request, EventRepository $eventRepository)
     {
         $route = null;
-        /** @var Event $closestSaturday */
-        $closestSaturday = $eventRepository->findLatestRoute();
+        /** @var Event $scheduledRoute */
+        $scheduledRoute = $eventRepository->findLatestRoute();
 
-        if ($closestSaturday) {
-            $route = $closestSaturday->getRouteCollection()->getRoutes()[0];
+        if ($scheduledRoute) {
+            $route = $scheduledRoute->getRouteCollection()->getRoutes()[0];
         }
 
         if (empty($route)) {
@@ -58,7 +58,7 @@ class RouteController extends AbstractController
 
         return [
             'route' => $route,
-            'closestSaturday' => $closestSaturday
+            'scheduledRoute' => $scheduledRoute
         ];
     }
 

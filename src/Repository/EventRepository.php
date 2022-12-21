@@ -19,7 +19,9 @@ class EventRepository extends ServiceEntityRepository
 
         $results = $this->createQueryBuilder('e')
             ->select('e')
-            ->where('e.datetime > :now')->setParameter('now', $dateTime)
+            ->where('e.datetime BETWEEN :now AND :max')
+                ->setParameter('now', $dateTime->format('Y-m-d 00:00:00'))
+                ->setParameter('max', $dateTime->format('Y-m-d 23:59:00'))
             ->getQuery()
             ->getResult();
 
