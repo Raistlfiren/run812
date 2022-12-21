@@ -4,11 +4,13 @@ namespace App\Controller\Admin;
 
 use App\Entity\Location;
 use App\Entity\RouteCollection;
+use App\Service\RideWithGPSClient;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
@@ -35,6 +37,17 @@ class DashboardController extends AbstractDashboardController
         // return $this->render('some/path/my-dashboard.html.twig');
     }
 
+    #[Route('/admin/fetch/routes', name: 'admin_fetch_routes')]
+    public function fetchRoutes(RideWithGPSClient $rideWithGPSClient, SessionInterface $session): Response
+    {
+        $rideWithGPSClient->fetchRoutes();
+
+        $this->addFlash('success', 'Routes updated!');
+
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
+        return $this->redirect($adminUrlGenerator->setController(LocationCrudController::class)->generateUrl());
+    }
+
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -59,12 +72,16 @@ class DashboardController extends AbstractDashboardController
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
 
-            MenuItem::section('Location'),
+            MenuItem::section('Route'),
             MenuItem::linkToCrud('Location', 'fa fa-map', Location::class),
 
             MenuItem::section('Route Collection'),
             MenuItem::linkToCrud('Route Collection', 'fa fa-list', RouteCollection::class),
 
+            MenuItem::section('Ride With GPS'),
+            MenuItem::linkToRoute('Fetch Latest Routes', 'fa fa-download', 'admin_fetch_routes'),
+
+            MenuItem::section('Profile'),
             MenuItem::linkToLogout('Logout', 'fa fa-right-from-bracket'),
         ];
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
