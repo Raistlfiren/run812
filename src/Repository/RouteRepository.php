@@ -16,7 +16,10 @@ class RouteRepository extends ServiceEntityRepository
     public function findAllWithCollection()
     {
         $qb = $this->createQueryBuilder('r')
+            ->select('r', 'rc', 'l', 'rcr')
             ->leftJoin('r.routeCollections', 'rc')
+            ->leftJoin('r.locations', 'l')
+            ->leftJoin('rc.routes', 'rcr')
             ->orderBy('r.name')
             ->addOrderBy('rc.name');
 
