@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\EventRepository;
 use App\Repository\LocationRepository;
 use App\Repository\RouteCollectionRepository;
 use App\Repository\RouteRepository;
@@ -27,15 +28,9 @@ class DefaultController extends AbstractController
 
     #[Route('/', name: 'home')]
     #[Template]
-    public function index(Request $request, LocationRepository $locationRepository)
+    public function index(Request $request, LocationRepository $locationRepository, EventRepository $eventRepository)
     {
-        $closestSaturday = null;
-
-        $saturdayRoute = $this->routeCollectionRepository->findOneBy(['saturdayRoute' => true]);
-        if ($saturdayRoute) {
-            $closestSaturday = (new \DateTime())->modify('next Saturday');
-        }
-
+        $saturdayRoute = $eventRepository->findLatestRoute();
         $locations = $locationRepository->findBy([], ['title' => 'asc']);
         $routes = $this->routeRepository->findAllWithCollection();
         $minDistance = $this->routeRepository->findMinimumDistance();
@@ -46,7 +41,6 @@ class DefaultController extends AbstractController
             'locations' => $locations,
             'minDistance' => $minDistance,
             'maxdistance' => $maxDistance,
-            'closestSaturday' => $closestSaturday,
             'saturdayRoute' => $saturdayRoute
         ];
     }

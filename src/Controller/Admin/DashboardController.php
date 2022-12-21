@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\RouteCollection;
 use App\Service\RideWithGPSClient;
@@ -77,6 +78,7 @@ class DashboardController extends AbstractDashboardController
 
             MenuItem::section('Route Collection'),
             MenuItem::linkToCrud('Route Collection', 'fa fa-list', RouteCollection::class),
+            MenuItem::linkToCrud('Events', 'fa fa-calendar', Event::class),
 
             MenuItem::section('Ride With GPS'),
             MenuItem::linkToRoute('Fetch Latest Routes', 'fa fa-download', 'admin_fetch_routes'),

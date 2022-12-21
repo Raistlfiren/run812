@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\OrderBy;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
@@ -34,9 +35,6 @@ class RouteCollection implements UuidInterface, SluggableInterface
     private $name;
 
 
-    #[Column(type: 'boolean')]
-    private $saturdayRoute;
-
     /**
      * @var ArrayCollection|Collection
      */
@@ -45,10 +43,14 @@ class RouteCollection implements UuidInterface, SluggableInterface
     #[OrderBy(['distance' => 'ASC'])]
     private $routes;
 
+    #[OneToMany(targetEntity: Event::class, mappedBy: 'routeCollection')]
+    private $events;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
         $this->routes = new ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
     /**
@@ -113,24 +115,6 @@ class RouteCollection implements UuidInterface, SluggableInterface
         $route->removeRouteCollection($this);
     }
 
-    /**
-     * @return mixed
-     */
-    public function isSaturdayRoute()
-    {
-        return $this->saturdayRoute;
-    }
-
-    /**
-     * @param mixed $saturdayRoute
-     * @return RouteCollection
-     */
-    public function setSaturdayRoute($saturdayRoute)
-    {
-        $this->saturdayRoute = $saturdayRoute;
-        return $this;
-    }
-
     public function getLocations()
     {
         $locations = [];
@@ -153,6 +137,24 @@ class RouteCollection implements UuidInterface, SluggableInterface
         }
 
         return $distances;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getEvents(): ArrayCollection
+    {
+        return $this->events;
+    }
+
+    /**
+     * @param ArrayCollection $events
+     * @return RouteCollection
+     */
+    public function setEvents(ArrayCollection $events): RouteCollection
+    {
+        $this->events = $events;
+        return $this;
     }
 
     /**

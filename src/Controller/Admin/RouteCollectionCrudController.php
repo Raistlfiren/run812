@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\RouteCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class RouteCollectionCrudController extends AbstractCrudController
@@ -24,7 +23,6 @@ class RouteCollectionCrudController extends AbstractCrudController
                 ->setFormTypeOption('choice_label', 'name')
                 ->setFormTypeOption('by_reference', false)
                 ->setFormTypeOption('multiple', true),
-            BooleanField::new('saturdayRoute'),
         ];
     }
 

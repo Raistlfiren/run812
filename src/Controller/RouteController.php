@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Event;
 use App\Entity\RouteCollection;
+use App\Repository\EventRepository;
 use App\Repository\RouteCollectionRepository;
 use App\Repository\RouteRepository;
 use App\Service\GeoJsonConverter;
@@ -40,13 +42,14 @@ class RouteController extends AbstractController
 
     #[Route('/saturday', name: 'saturday')]
     #[Template('route/view.html.twig')]
-    public function saturday(Request $request)
+    public function saturday(Request $request, EventRepository $eventRepository)
     {
-        $routeCollection = $this->routeCollectionRepository->findOneBy(['saturdayRoute' => true]);
-        $closestSaturday = (new \DateTime())->modify('next Saturday');
+        $route = null;
+        /** @var Event $closestSaturday */
+        $closestSaturday = $eventRepository->findLatestRoute();
 
-        if ($routeCollection) {
-            $route = $routeCollection->getRoutes()[0];
+        if ($closestSaturday) {
+            $route = $closestSaturday->getRouteCollection()->getRoutes()[0];
         }
 
         if (empty($route)) {

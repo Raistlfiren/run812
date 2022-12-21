@@ -40,10 +40,10 @@
 
     </section>
 
-    {% if closestSaturday is not empty %}
+    {% if saturdayRoute is not empty %}
         <section class="py-2">
             <div class="alert alert-danger container text-center" role="alert">
-                    Hey! Please consider joining us for our Saturday route on {{ closestSaturday|date('F j') }}.
+                    Hey! Please consider joining us for our {{ saturdayRoute.datetime|date('l') }} route on {{ saturdayRoute.datetime|date('F j \\a\\t g:i a') }}.
                     <a href="{{ path('route_saturday') }}" class="alert-link">View Saturday Route</a>
             </div>
         </section>
