@@ -49,6 +49,12 @@ class Route implements UuidInterface, SluggableInterface
     private $name;
 
     /**
+     * @var string
+     */
+    #[Column(type: 'text', nullable: true)]
+    private $description;
+
+    /**
      * @var float
      */
     #[Column(type: 'float')]
@@ -333,6 +339,24 @@ class Route implements UuidInterface, SluggableInterface
     public function setTrackType(string $trackType): Route
     {
         $this->trackType = $trackType;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Route
+     */
+    public function setDescription(string $description): Route
+    {
+        $this->description = $description;
         return $this;
     }
 

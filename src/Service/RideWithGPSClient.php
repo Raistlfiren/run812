@@ -87,6 +87,7 @@ class RideWithGPSClient
                 $routeEntity = new Route();
                 $distance = MeterToMileConverter::convertToMiles($route['distance']);
                 $routeEntity->setName($name);
+                $routeEntity->setDescription($route['description']);
                 $routeEntity->setDistance($distance);
                 $routeEntity->setElevationGain($route['elevation_gain']);
                 $routeEntity->setElevationLoss($route['elevation_loss']);

@@ -42,6 +42,11 @@
                         </a>
                     </div>
 
+                    <div class="mb-5">
+                        <h5 class="card-title">{{ route.name }} Description</h5>
+                        <p>{{ route.description }}</p>
+                    </div>
+
                     <h5 class="card-title">Cuesheet</h5>
                     <div class="list-group list-group-flush ps-0">
                         {% set coursePoints = route.jsonRoute.route.course_points %}
