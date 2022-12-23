@@ -63,4 +63,4 @@ document.addEventListener('DOMContentLoaded', function(event) {
             map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
         }, 400);
     });
-});
+}, {passive: true});
