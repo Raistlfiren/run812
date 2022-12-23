@@ -20,3 +20,5 @@ library.add(
 );
 
 dom.watch();
+
+document.addEventListener('touchstart', onTouchStart, {passive: true});

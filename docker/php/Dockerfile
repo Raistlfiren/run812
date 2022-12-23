@@ -5,6 +5,8 @@ RUN set -xe \
     && apk add --no-cache --update --virtual .phpize-deps $PHPIZE_DEPS \
     && apk add --update linux-headers \
     && apk add git bash libpng libpng-dev openssh rsync icu-dev \
+    && apk add freetype-dev libjpeg-turbo-dev libwebp-dev libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-webp --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql gd intl \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \

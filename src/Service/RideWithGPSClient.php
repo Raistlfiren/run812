@@ -128,7 +128,18 @@ class RideWithGPSClient
                 $resourceFile = $staticImageResponse->getContent();
 
                 $filePath = $this->routesDirectory . DIRECTORY_SEPARATOR . $rideWithGPSID . '.png';
+                $webPFilePath = $this->routesDirectory . DIRECTORY_SEPARATOR . $rideWithGPSID . '.webp';
                 $this->filesystem->dumpFile($filePath, $resourceFile);
+
+                $gdImageInstance = imagecreatefrompng($filePath);
+
+                $conversionSuccess = imagewebp(
+                    $gdImageInstance,
+                    $webPFilePath,
+                    100
+                );
+
+                imagedestroy($gdImageInstance);
             }
 
 //            foreach ($routeCollections as $name => $routeCollection) {
