@@ -44,6 +44,8 @@ class RideWithGPSClient
 //        $connection->prepare('TRUNCATE TABLE route_collection')->executeQuery();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=1')->executeQuery();
 
+        $this->filesystem->remove(glob($this->routesDirectory . DIRECTORY_SEPARATOR . '*'));
+
         $response = $this->client->request(
             'GET',
             'https://ridewithgps.com/users/current.json',
