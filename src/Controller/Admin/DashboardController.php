@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\Route as RouteEntity;
 use App\Entity\RouteCollection;
+use App\Entity\User;
 use App\Service\RideWithGPSClient;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -86,6 +87,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToRoute('Fetch Latest Routes', 'fa fa-download', 'admin_fetch_routes'),
 
             MenuItem::section('Profile'),
+            MenuItem::linkToCrud('User Management', 'fa fa-users', User::class),
             MenuItem::linkToLogout('Logout', 'fa fa-right-from-bracket'),
         ];
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
