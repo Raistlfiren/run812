@@ -27,8 +27,6 @@ class GeoJsonConverter
 
         $endPoint = new Point([$json['last_lng'], $json['last_lat']]);
         $startPoint = new Point([$json['first_lng'], $json['first_lat']]);
-        $features = new FeatureCollection([$trackFeature, (new Feature($startPoint, ['name' => 'start'])), (new Feature($endPoint, ['name' => 'end']))]);
-
-        return $features;
+        return new FeatureCollection([$trackFeature, (new Feature($startPoint, ['name' => 'start'])), (new Feature($endPoint, ['name' => 'end']))]);
     }
 }
