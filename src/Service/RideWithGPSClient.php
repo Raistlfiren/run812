@@ -7,6 +7,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Service to pull the latest routes from Ride with GPS and put them into the database.
+ */
 class RideWithGPSClient
 {
     private HttpClientInterface $client;
@@ -36,16 +39,22 @@ class RideWithGPSClient
         $this->filesystem = $filesystem;
     }
 
-    public function fetchRoutes()
+    protected function truncateRoutesTable()
     {
         $connection = $this->em->getConnection();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=0')->executeQuery();
         $connection->prepare('TRUNCATE TABLE route')->executeQuery();
-//        $connection->prepare('TRUNCATE TABLE route_collection')->executeQuery();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=1')->executeQuery();
+    }
 
+    public function fetchRoutes()
+    {
+        $this->truncateRoutesTable();
+
+        // Remove all png and webp images that are downloaded from Ride with GPS
         $this->filesystem->remove(glob($this->routesDirectory . DIRECTORY_SEPARATOR . '*'));
 
+        // Generate a unique token to download routes individually
         $response = $this->client->request(
             'GET',
             'https://ridewithgps.com/users/current.json',
@@ -60,10 +69,12 @@ class RideWithGPSClient
 
         $content = $response->toArray();
 
+        // Check to see if user token was pulled successfully
         if (isset($content['user']) && isset($content['user']['auth_token'])) {
             $id = $content['user']['id'];
             $token = $content['user']['auth_token'];
 
+            // Fetch a list of all private routes from Ride With GPS
             $response = $this->client->request(
                 'GET',
                 'https://ridewithgps.com/users/'.$id.'/routes.json',
@@ -79,13 +90,13 @@ class RideWithGPSClient
             );
 
             $routes = $response->toArray()['results'];
-            $routeCollection = [];
 
             foreach ($routes as $route) {
 
                 $name = $route['name'];
                 $rideWithGPSID = $route['id'];
 
+                // Create a new route in the database and store route metadata
                 $routeEntity = new Route();
                 $distance = MeterToMileConverter::convertToMiles($route['distance']);
                 $routeEntity->setName($name);
@@ -95,8 +106,8 @@ class RideWithGPSClient
                 $routeEntity->setElevationLoss($route['elevation_loss']);
                 $routeEntity->setTrackType($route['track_type']);
                 $routeEntity->setId($rideWithGPSID);
-                $routeCollections[$name][] = $routeEntity;
 
+                // Fetch the routes complete JSON to store in the database
                 $response = $this->client->request(
                     'GET',
                     'https://ridewithgps.com/routes/'.$rideWithGPSID.'.json',
@@ -113,6 +124,7 @@ class RideWithGPSClient
 
                 $this->em->persist($routeEntity);
 
+                // Fetch the static PNG image
                 $staticImageResponse = $this->client->request(
                     'GET',
                     'https://ridewithgps.com/routes/'.$rideWithGPSID.'/hover_preview.png',
@@ -133,6 +145,7 @@ class RideWithGPSClient
 
                 $gdImageInstance = imagecreatefrompng($filePath);
 
+                // Convert the PNG to WEBP
                 $conversionSuccess = imagewebp(
                     $gdImageInstance,
                     $webPFilePath,
@@ -141,18 +154,6 @@ class RideWithGPSClient
 
                 imagedestroy($gdImageInstance);
             }
-
-//            foreach ($routeCollections as $name => $routeCollection) {
-//                if (count($routeCollection) > 1) {
-//                    $routeC = new RouteCollection();
-//                    $routeC->setName($name);
-//                    foreach ($routeCollection as $route) {
-//                        $route->setRouteCollection($routeC);
-//                    }
-//
-//                    $this->em->persist($routeC);
-//                }
-//            }
         }
 
         $this->em->flush();
