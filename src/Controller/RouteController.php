@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Route as EntityRoute;
 use App\Entity\RouteCollection;
 use App\Repository\EventRepository;
 use App\Repository\RouteCollectionRepository;
@@ -30,12 +31,10 @@ class RouteController extends AbstractController
     }
 
     #[Route('/{slug}/geojson', name: 'geojson')]
-    public function fetchGeoJSON(Request $request, $slug)
+    public function fetchGeoJSON(Request $request, EntityRoute $route)
     {
-        $route = $this->routeRepository->findOneBy(['slug' => $slug]);
-
         return $this->json([
-            'slug'  => $slug,
+            'slug'  => $route->getSlug(),
             'geojson' => GeoJsonConverter::convertRoute($route)
         ]);
     }
@@ -49,11 +48,15 @@ class RouteController extends AbstractController
         $scheduledRoute = $eventRepository->findLatestRoute();
 
         if ($scheduledRoute) {
+            if ($scheduledRoute->getRouteCollection() === null) {
+                return $this->redirectToRoute('home');
+            }
+
             $route = $scheduledRoute->getRouteCollection()->getRoutes()[0];
         }
 
         if (empty($route)) {
-            return $this->redirectToRoute('routes_index');
+            return $this->redirectToRoute('home');
         }
 
         return [
@@ -76,6 +79,10 @@ class RouteController extends AbstractController
             }
         }
 
+        if (empty($route)) {
+            throw $this->createNotFoundException('Invalid route or route collection');
+        }
+
         return [
             'route' => $route,
         ];
@@ -83,10 +90,8 @@ class RouteController extends AbstractController
 
     #[Route('/{slug}/pdf', name: 'pdf')]
     #[Template()]
-    public function pdf($slug)
+    public function pdf(EntityRoute $route)
     {
-        $route = $this->routeRepository->findOneBy(['slug' => $slug]);
-
         $pdfHTML = $this->renderView('route/pdf.html.twig', [
             'route' => $route->getJsonRoute()['route']
         ]);
