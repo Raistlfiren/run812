@@ -11,7 +11,9 @@
 
         th, td {
             text-align: center;
-            padding: 2px;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-collapse: collapse;
         }
 
         tr th {
@@ -35,7 +37,7 @@
                 <th>Turn</th>
                 <th>Next</th>
                 <th>Road</th>
-                <th>Dist</th>
+                <th>Total</th>
             </tr>
             {% for cue in route.course_points %}
                 {% if route.course_points[(loop.index0-1)] is defined %}
@@ -63,7 +65,7 @@
                         <th>Turn</th>
                         <th>Next</th>
                         <th>Road</th>
-                        <th>Dist</th>
+                        <th>Total</th>
                     </tr>
                     {% for column in cue %}
                         {% if route.course_points[(counter-1)] is defined %}
