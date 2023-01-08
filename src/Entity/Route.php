@@ -10,10 +10,10 @@ use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\PersistentCollection;
 use Knp\DoctrineBehaviors\Contract\Entity\SluggableInterface;
 use Knp\DoctrineBehaviors\Model\Sluggable\SluggableTrait;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as BaseUuidInterface;
 
 /**
  * Class Route
@@ -82,13 +82,13 @@ class Route implements UuidInterface, SluggableInterface
     private $jsonRoute;
 
     /**
-     * @var RouteCollection
+     * @var Collection
      */
     #[ManyToMany(targetEntity: RouteCollection::class, inversedBy: 'routes', cascade: ['persist'])]
     private $routeCollections;
 
     /**
-     * @var ArrayCollection|Collection
+     * @var Collection
      */
     #[ManyToMany(targetEntity: Location::class, inversedBy: 'routes')]
     private $locations;
@@ -155,18 +155,18 @@ class Route implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @return RouteCollection|null|PersistentCollection
+     * @return Collection
      */
-    public function getRouteCollections(): ?PersistentCollection
+    public function getRouteCollections(): Collection
     {
         return $this->routeCollections;
     }
 
     /**
-     * @param RouteCollection $routeCollections
+     * @param Collection $routeCollections
      * @return Route
      */
-    public function setRouteCollections(RouteCollection $routeCollections): Route
+    public function setRouteCollections(Collection $routeCollections): Route
     {
         $this->routeCollections = $routeCollections;
         return $this;
@@ -184,27 +184,27 @@ class Route implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @return ArrayCollection|Collection
+     * @return Collection
      */
-    public function getLocations(): ArrayCollection|Collection
+    public function getLocations(): Collection
     {
         return $this->locations;
     }
 
     /**
-     * @param ArrayCollection|Collection $locations
+     * @param Collection $locations
      * @return Route
      */
-    public function setLocations(ArrayCollection|Collection $locations): Route
+    public function setLocations(Collection $locations): Route
     {
         $this->locations = $locations;
         return $this;
     }
 
     /**
-     * @param mixed $location
+     * @param Location $location
      */
-    public function addLocation($location)
+    public function addLocation(Location $location)
     {
         if ($this->locations->contains($location)) {
             return;
@@ -215,9 +215,9 @@ class Route implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @param mixed $location
+     * @param Location $location
      */
-    public function removeLocation($location)
+    public function removeLocation(Location $location)
     {
         if (!$this->locations->contains($location)) {
             return;
@@ -233,17 +233,17 @@ class Route implements UuidInterface, SluggableInterface
         return $this->id;
     }
 
-    public function getUuid(): \Ramsey\Uuid\UuidInterface
+    public function getUuid(): BaseUuidInterface
     {
         return $this->uuid;
     }
 
     /**
-     * @param UuidInterface $uuid
+     * @param BaseUuidInterface $uuid
      *
      * @return self
      */
-    public function setUuid(\Ramsey\Uuid\UuidInterface $uuid)
+    public function setUuid(BaseUuidInterface $uuid)
     {
         $this->uuid = $uuid;
 

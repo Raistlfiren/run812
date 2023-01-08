@@ -13,6 +13,7 @@ class GeoJsonConverter
 {
     public static function convertRoute(Route $route)
     {
+        $line = [];
         $json = $route->getJsonRoute()['route'];
 
         foreach ($json['track_points'] as $trackPoint) {

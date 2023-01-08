@@ -44,15 +44,16 @@ class RouteController extends AbstractController
     public function scheduled(Request $request, EventRepository $eventRepository)
     {
         $route = null;
-        /** @var Event $scheduledRoute */
+        /** @var Event|null $scheduledRoute */
         $scheduledRoute = $eventRepository->findLatestRoute();
 
-        if ($scheduledRoute) {
-            if ($scheduledRoute->getRouteCollection() === null) {
+        if ($scheduledRoute !== null) {
+            $routeCollection = $scheduledRoute->getRouteCollection();
+            if ($routeCollection === null || ! is_array($routeCollection->getRoutes())) {
                 return $this->redirectToRoute('home');
             }
 
-            $route = $scheduledRoute->getRouteCollection()->getRoutes()[0];
+            $route = $routeCollection->getRoutes()[0];
         }
 
         if (empty($route)) {

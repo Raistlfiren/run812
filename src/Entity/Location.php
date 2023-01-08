@@ -33,7 +33,7 @@ class Location implements UuidInterface, SluggableInterface
     private $title;
 
     /**
-     * @var ArrayCollection|Collection
+     * @var Collection
      */
     #[ManyToMany(targetEntity: Route::class, mappedBy: 'locations')]
     #[OrderBy(['distance' => 'ASC'])]
@@ -64,27 +64,27 @@ class Location implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @return ArrayCollection|Collection
+     * @return Collection
      */
-    public function getRoutes(): ArrayCollection|Collection
+    public function getRoutes(): Collection
     {
         return $this->routes;
     }
 
     /**
-     * @param ArrayCollection|Collection $routes
+     * @param Collection $routes
      * @return Location
      */
-    public function setRoutes(ArrayCollection|Collection $routes): Location
+    public function setRoutes(Collection $routes): Location
     {
         $this->routes = $routes;
         return $this;
     }
 
     /**
-     * @param mixed $route
+     * @param Route $route
      */
-    public function addRoute($route)
+    public function addRoute(Route $route)
     {
         if ($this->routes->contains($route)) {
             return;
@@ -95,9 +95,9 @@ class Location implements UuidInterface, SluggableInterface
     }
 
     /**
-     * @param mixed $route
+     * @param Route $route
      */
-    public function removeRoute($route)
+    public function removeRoute(Route $route)
     {
         if (!$this->routes->contains($route)) {
             return;
