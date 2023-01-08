@@ -9,7 +9,9 @@ class RouteCleaner
         'right' => 'R',
         'sharp right' => 'SR',
         'sharp left' => 'SL',
-        'straight' => 'S'
+        'straight' => 'S',
+        'slight right' => 'SR',
+        'slight left' => 'SL'
     ];
 
     public const CLEAN_WORDS = [
@@ -21,7 +23,7 @@ class RouteCleaner
     ];
 
     public const CLEAN_WORDS_REGEX_OLD = '/turn|onto|left|right|sharp/i';
-    public const CLEAN_WORDS_REGEX = '/turn|onto/i';
+    public const CLEAN_WORDS_REGEX = '/turn\s|onto\s/i';
 
     public static function cleanTurnDirection($turnDirection)
     {
@@ -34,6 +36,6 @@ class RouteCleaner
     {
         $phrase = preg_replace(self::CLEAN_WORDS_REGEX, '', $directions);
 
-        return str_replace(['left', 'right', 'sharp'], ['Left', 'Right', 'Sharp'], $phrase);
+        return ucfirst(str_replace(array_keys(self::TURN_DIRECTIONS), array_values(self::TURN_DIRECTIONS), $phrase));
     }
 }
