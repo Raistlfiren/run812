@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Service\RideWithGPSClient;
+use App\Service\RouteHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,9 +15,9 @@ class RouteCommand extends Command
 {
     protected static $defaultName = 'routes:download';
     private EntityManagerInterface $entityManager;
-    private RideWithGPSClient $client;
+    private RouteHandler $client;
 
-    public function __construct(EntityManagerInterface $entityManager, RideWithGPSClient $client)
+    public function __construct(EntityManagerInterface $entityManager, RouteHandler $client)
     {
         $this->entityManager = $entityManager;
 

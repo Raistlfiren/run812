@@ -7,7 +7,7 @@ use App\Entity\Location;
 use App\Entity\Route as RouteEntity;
 use App\Entity\RouteCollection;
 use App\Entity\User;
-use App\Service\RideWithGPSClient;
+use App\Service\RouteHandler;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -41,7 +41,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     #[Route('/admin/fetch/routes', name: 'admin_fetch_routes')]
-    public function fetchRoutes(RideWithGPSClient $rideWithGPSClient, SessionInterface $session): Response
+    public function fetchRoutes(RouteHandler $rideWithGPSClient, SessionInterface $session): Response
     {
         $rideWithGPSClient->fetchRoutes();
 
