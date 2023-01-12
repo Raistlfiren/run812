@@ -49,7 +49,7 @@ class RouteController extends AbstractController
 
         if ($scheduledRoute !== null) {
             $routeCollection = $scheduledRoute->getRouteCollection();
-            if ($routeCollection === null || ! is_array($routeCollection->getRoutes())) {
+            if ($routeCollection === null) {
                 return $this->redirectToRoute('home');
             }
 
