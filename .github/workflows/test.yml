@@ -17,6 +17,22 @@ jobs:
     # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
     # uses: shivammathur/setup-php@v2
     # Define the right Node.js's environment
+    - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+      with:
+        php-version: '8.1'
+    - uses: actions/checkout@v3
+    # To be faster, use cache system for the NPM
+    -   name: Cache NPM (node_modules)
+        uses: actions/cache@v2
+        env:
+            cache-name: cache-node-modules
+        with:
+            path: ~/.npm
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
     -   name: Environment for NPM
         uses: actions/setup-node@v2
         with:
@@ -25,12 +41,7 @@ jobs:
     # NPM run build
     -   name: NPM build
         run: |
-            npm install
             npm run build
-    - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
-      with:
-        php-version: '8.1'
-    - uses: actions/checkout@v3
     - name: Copy .env.test.local
       run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
     - name: Cache Composer packages
