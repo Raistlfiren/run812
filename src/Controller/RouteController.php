@@ -13,6 +13,7 @@ use Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/routes', name: 'route_')]
@@ -90,7 +91,6 @@ class RouteController extends AbstractController
     }
 
     #[Route('/{slug}/pdf', name: 'pdf')]
-    #[Template()]
     public function pdf(EntityRoute $route)
     {
         $pdfHTML = $this->renderView('route/pdf.html.twig', [
@@ -101,10 +101,17 @@ class RouteController extends AbstractController
 
         $mpdf = new Mpdf\Mpdf();
         $mpdf->WriteHTML($pdfHTML);
-        $mpdf->Output($name, Mpdf\Output\Destination::INLINE);
+        $content = $mpdf->Output($name, Mpdf\Output\Destination::STRING_RETURN);
 
-        return [
-            'route' => $route->getJsonRoute()
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Cache-Control' => 'public, must-revalidate, max-age=0',
+            'Pragma' => 'public',
+            'Expires' => 'Sat, 26 Jul 1997 05:00:00 GMT',
+            'Last-Modified' => gmdate('D, d M Y H:i:s') . ' GMT',
+            'Content-disposition' => "inline; filename=$name"
         ];
+
+        return new Response($content, 200, $headers);
     }
 }

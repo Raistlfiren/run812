@@ -30,7 +30,7 @@ class RouteHandler
         $this->routeClient = $routeClient;
     }
 
-    protected function truncateRoutesTable()
+    public function truncateRoutesTable()
     {
         $connection = $this->em->getConnection();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=0')->executeQuery();
@@ -38,6 +38,12 @@ class RouteHandler
         $connection->prepare('SET FOREIGN_KEY_CHECKS=1')->executeQuery();
     }
 
+    // Test - does it truncate routes table
+    // Test - does it delete all files in routes directory
+    // Test - does an object get created with specified data
+    // Test - does a thumbnail get stored in the filesystem
+    // Test - does a WEBP file get created and stored in the filesystem
+    // Test - does the database contain a new route
     public function fetchRoutes()
     {
         $this->truncateRoutesTable();

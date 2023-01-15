@@ -32,8 +32,8 @@ services:
       - ./docker/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
     environment:
-      DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
-      APP_ENV: dev  # For debugging purpose we built it as a dev version
+      #DATABASE_URL: mysql://symfony:symfony@mysql:3306/symfony?serverVersion=5.7
+      #APP_ENV: dev  # For debugging purpose we built it as a dev version
       PHP_IDE_CONFIG: serverName=symfony-php # This needs to be in under PHP -> Servers -> Name (Set to symfony-php)
     extra_hosts:
       - "host.docker.internal:host-gateway"
