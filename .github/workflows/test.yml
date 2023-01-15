@@ -41,6 +41,7 @@ jobs:
     # NPM run build
     -   name: NPM build
         run: |
+            npm install
             npm run build
     - name: Copy .env.test.local
       run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
