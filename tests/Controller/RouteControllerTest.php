@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\DataFixtures\LocationFixtures;
 use App\Tests\DatabaseTestCase;
+use App\Tests\DataFixtures\EventFailureFixtures;
 use App\Tests\DataFixtures\EventFixtures;
 use App\Tests\DataFixtures\RouteCollectionFixtures;
 use App\Tests\DataFixtures\RouteFixtures;
@@ -27,6 +28,44 @@ class RouteControllerTest extends DatabaseTestCase
         
         // Check title
         $this->assertSelectorTextContains('h5', 'Ride the Rogue');
+    }
+
+    /**
+     * @test
+     */
+    public function route_view_404_test()
+    {
+        $this->databaseTool->loadFixtures([
+            LocationFixtures::class,
+            RouteFixtures::class,
+            RouteCollectionFixtures::class
+        ]);
+
+        $this->client->request('GET', '/routes/ride-the');
+
+        $response = $this->client->getResponse();
+
+        $this->assertResponseStatusCodeSame(404);
+        $this->assertStringContainsString('Invalid route or route collection', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function route_view_routecollection_test()
+    {
+        $this->databaseTool->loadFixtures([
+            LocationFixtures::class,
+            RouteFixtures::class,
+            RouteCollectionFixtures::class
+        ]);
+
+        $this->client->request('GET', '/routes/test-route');
+
+        $this->assertResponseIsSuccessful();
+
+        // Check title
+        $this->assertSelectorTextContains('h5', 'Test Route');
     }
 
     /**
@@ -82,6 +121,23 @@ class RouteControllerTest extends DatabaseTestCase
             LocationFixtures::class,
             RouteFixtures::class,
             RouteCollectionFixtures::class
+        ]);
+
+        $this->client->request('GET', '/routes/scheduled');
+
+        $this->assertResponseRedirects('/', 302);
+    }
+
+    /**
+     * @test
+     */
+    public function route_fetch_scheduled_redirect_routecollection_test()
+    {
+        $this->databaseTool->loadFixtures([
+            LocationFixtures::class,
+            RouteFixtures::class,
+            RouteCollectionFixtures::class,
+            EventFailureFixtures::class
         ]);
 
         $this->client->request('GET', '/routes/scheduled');
