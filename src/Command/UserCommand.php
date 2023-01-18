@@ -55,7 +55,6 @@ class UserCommand extends Command
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-
         return Command::SUCCESS;
     }
 }
