@@ -30,7 +30,7 @@ class RouteHandler
         $this->routeClient = $routeClient;
     }
 
-    public function truncateRoutesTable()
+    protected function truncateRoutesTable()
     {
         $connection = $this->em->getConnection();
         $connection->prepare('SET FOREIGN_KEY_CHECKS=0')->executeQuery();
@@ -47,8 +47,6 @@ class RouteHandler
     public function fetchRoutes()
     {
         $this->truncateRoutesTable();
-
-        $test = glob($this->routesDirectory . DIRECTORY_SEPARATOR . '*');
 
         // Remove all png and webp images that are downloaded from Ride with GPS
         $this->filesystem->remove(glob($this->routesDirectory . DIRECTORY_SEPARATOR . '*'));
@@ -83,19 +81,24 @@ class RouteHandler
             $webPFilePath = $this->routesDirectory . DIRECTORY_SEPARATOR . $rideWithGPSID . '.webp';
             $this->filesystem->dumpFile($filePath, $thumbnailImage);
 
-            $gdImageInstance = imagecreatefrompng($filePath);
-
-            // Convert the PNG to WEBP
-            $conversionSuccess = imagewebp(
-                $gdImageInstance,
-                $webPFilePath,
-                100
-            );
-
-            imagedestroy($gdImageInstance);
+            $this->convertFileToWebP($filePath, $webPFilePath);
         }
 
         $this->em->flush();
 
+    }
+
+    protected function convertFileToWebP($filePath, $webPFilePath)
+    {
+        $gdImageInstance = imagecreatefrompng($filePath);
+
+        // Convert the PNG to WEBP
+        imagewebp(
+            $gdImageInstance,
+            $webPFilePath,
+            100
+        );
+
+        imagedestroy($gdImageInstance);
     }
 }
