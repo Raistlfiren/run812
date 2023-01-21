@@ -11,7 +11,9 @@
         "sass": "^1.35.1",
         "sass-loader": "^12.1.0",
         "shufflejs": "^6.1.0",
-        "webpack-notifier": "^1.6.0"
+        "webpack-notifier": "^1.6.0",
+        "@popperjs/core": "^2.11.6",
+        "leaflet-geometryutil": "^0.10.1"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -22,6 +24,6 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "leaflet-geometryutil": "^0.10.1"
+
     }
 }
