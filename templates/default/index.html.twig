@@ -43,7 +43,7 @@
     {% if scheduledRoute is not empty %}
         <section class="py-2">
             <div class="alert alert-danger container text-center" role="alert">
-                    Hey! Please consider joining us on our {{ scheduledRoute.datetime|date('l') }} route on {{ scheduledRoute.datetime|date('F j \\a\\t g:i a') }}.
+                    Hey! Please consider joining us on our {{ scheduledRoute.datetime|date('l') }} route on <strong>{{ scheduledRoute.datetime|date('F j \\a\\t g:i a') }}</strong>.
                     <a href="{{ path('route_scheduled') }}" class="alert-link">View {{ scheduledRoute.datetime|date('l') }} Route</a>
             </div>
         </section>
