@@ -1,7 +1,12 @@
 import './styles/app.scss';
 import {dom, library} from '@fortawesome/fontawesome-svg-core';
-import {faStar as faStarSolid} from '@fortawesome/free-solid-svg-icons';
-import {faStar as faStarRegular} from '@fortawesome/free-regular-svg-icons';
+import {
+    faArrowRightFromBracket as faArrowRightFromBracketSolid,
+    faDownload as faDownloadSolid,
+    faPrint as faPrintSolid,
+    faRoute as faRouteSolid,
+    faStar as faStarSolid
+} from '@fortawesome/free-solid-svg-icons';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -15,8 +20,11 @@ L.Icon.Default.mergeOptions({
 });
 
 library.add(
-    faStarRegular,
-    faStarSolid
+    faStarSolid,
+    faPrintSolid,
+    faDownloadSolid,
+    faRouteSolid,
+    faArrowRightFromBracketSolid
 );
 
 dom.watch();

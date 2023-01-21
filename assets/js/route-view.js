@@ -1,5 +1,7 @@
 import "../styles/route-view.scss";
 import L from "leaflet";
+import "./vendor/leaflet-distance-markers";
+import "leaflet-geometryutil";
 
 document.addEventListener('DOMContentLoaded', function(event) {
     const mapElement = document.getElementById('map');
@@ -14,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         .then((response) => response.json())
         .then(function (data) {
             L.geoJSON(data.geojson, {
+                distanceMarkers: {iconSize: [20, 20], offset: 1609},
                 pointToLayer: function(feature, latlng) {
                     var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
 
