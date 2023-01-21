@@ -21,7 +21,7 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "ramsey/uuid-doctrine": "^1.6",
         "sensio/framework-extra-bundle": "^6.1",
-        "sibyx/phpgpx": "^1.1",
+        "sibyx/phpgpx": "^1.2",
         "symfony/asset": "6.1.*",
         "symfony/console": "6.1.*",
         "symfony/dotenv": "6.1.*",

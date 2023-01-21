@@ -42,6 +42,12 @@
                         </a>
                     </div>
 
+                    <div class="list-group mb-5">
+                        <a href="{{ path('route_gpx', {slug: route.slug}) }}" type="button" class="list-group-item list-group-item-secondary" aria-current="true">
+                            Export Route to GPX
+                        </a>
+                    </div>
+
                     {% if route.description is not empty %}
                         <div class="mb-5">
                             <h5 class="card-title">{{ route.name }} Description</h5>

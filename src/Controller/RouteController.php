@@ -9,6 +9,7 @@ use App\Repository\EventRepository;
 use App\Repository\RouteCollectionRepository;
 use App\Repository\RouteRepository;
 use App\Service\GeoJsonConverter;
+use App\Service\GPXHandler;
 use Mpdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -114,4 +115,19 @@ class RouteController extends AbstractController
 
         return new Response($content, 200, $headers);
     }
+
+    #[Route('/{slug}/gpx', name: 'gpx')]
+    public function gpx(EntityRoute $route)
+    {
+        $gpxFile = GPXHandler::createGPX($route);
+        $name = $route->getSlug().'.gpx';
+
+        $headers = [
+            'Content-Type' => 'application/gpx+xml',
+            'Content-disposition' => "attachment; filename=$name"
+        ];
+
+        return new Response($gpxFile->toXML()->saveXML(), 200, $headers);
+    }
+
 }
