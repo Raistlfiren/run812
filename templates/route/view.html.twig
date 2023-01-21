@@ -21,19 +21,30 @@
                     {% if route.routeCollections is not empty %}
                         <h6 class="card-subtitle text-muted">Please select one of the routes below</h6>
                     {% endif %}
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <h6 class="card-subtitle text-muted" title="Distance in miles"><i class="fa-solid fa-ruler-horizontal"></i>&nbsp;{{ route.distance }} mi</h6>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="card-subtitle text-muted" title="Elevation Gain"><i class="fa-solid fa-square-plus"></i>&nbsp;{{ route.elevationGain }} ft</h6>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="card-subtitle text-muted" title="Elevation Loss"><i class="fa-solid fa-square-minus"></i>&nbsp;{{ route.elevationLoss }} ft</h6>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <strong>Distance(s)</strong>
+                    <strong><i class="fa-solid fa-route"></i> Distance(s)</strong>
                     <ul class="list-group mb-5">
                         {% if route.routeCollections is not empty %}
                             {% for routeItem in route.routeCollections.0.routes %}
                                 <a class="list-group-item list-group-item-action {{ route == routeItem ? 'active' : '' }}" href="{{ path('route_view', {'slug': routeItem.slug}) }}">
-                                    <i class="fa-solid fa-route"></i> {{ routeItem.distance }} - {{ routeItem.name }}
+                                     {{ routeItem.distance }} - {{ routeItem.name }}
                                 </a>
                             {% endfor %}
                         {% else %}
                             <li class="list-group-item list-group-item-action active">
-                                <i class="fa-solid fa-route"></i> {{ route.distance }} Miles Route
+                                {{ route.distance }} Miles Route
                             </li>
                         {% endif %}
                     </ul>

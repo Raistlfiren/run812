@@ -5,6 +5,9 @@ import {
     faDownload as faDownloadSolid,
     faPrint as faPrintSolid,
     faRoute as faRouteSolid,
+    faRulerHorizontal as faRulerHorizontalSolid,
+    faSquareMinus as faSquareMinusSolid,
+    faSquarePlus as faSquarePlusSolid,
     faStar as faStarSolid
 } from '@fortawesome/free-solid-svg-icons';
 import L from 'leaflet';
@@ -24,7 +27,10 @@ library.add(
     faPrintSolid,
     faDownloadSolid,
     faRouteSolid,
-    faArrowRightFromBracketSolid
+    faArrowRightFromBracketSolid,
+    faSquarePlusSolid,
+    faSquareMinusSolid,
+    faRulerHorizontalSolid
 );
 
 dom.watch();

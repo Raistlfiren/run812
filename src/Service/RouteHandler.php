@@ -60,12 +60,14 @@ class RouteHandler
 
             // Create a new route in the database and store route metadata
             $routeEntity = new Route();
-            $distance = MeterToMileConverter::convertToMiles($route['distance']);
+            $distance = MetricToImperialConverter::convertMetersToMiles($route['distance']);
+            $elevationGain = MetricToImperialConverter::convertMetersToFeet($route['elevation_gain']);
+            $elevationLoss = MetricToImperialConverter::convertMetersToFeet($route['elevation_loss']);
             $routeEntity->setName($name);
             $routeEntity->setDescription($route['description']);
             $routeEntity->setDistance($distance);
-            $routeEntity->setElevationGain($route['elevation_gain']);
-            $routeEntity->setElevationLoss($route['elevation_loss']);
+            $routeEntity->setElevationGain($elevationGain);
+            $routeEntity->setElevationLoss($elevationLoss);
             $routeEntity->setTrackType($route['track_type']);
             $routeEntity->setId($rideWithGPSID);
 
