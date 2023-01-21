@@ -11,7 +11,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class RouteHandlerTest extends DatabaseTestCase
 {
 
-    public function test_truncate()
+    public function test_route_handler()
     {
         $fellAllRoutes = file_get_contents(__DIR__ . '/../Responses/Expected/fetch_all_routes.json');
         $fetchRoute = file_get_contents(__DIR__ . '/../Responses/Expected/fetch_individual_route.json');
