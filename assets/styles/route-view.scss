@@ -1,2 +1,7 @@
+@import "~bootstrap/scss/functions";
+
+@import "~bootstrap/scss/variables";
+
 #map { height: calc( 100vh - 5em ); width: auto; flex-grow: 1;}
 .sidebar {height: calc( 100vh - 5em );}
+.direction:hover {background-color: $gray-200; cursor: pointer;}
