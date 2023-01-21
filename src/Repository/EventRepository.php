@@ -15,12 +15,15 @@ class EventRepository extends ServiceEntityRepository
 
     public function findLatestRoute()
     {
-        $dateTime = new \DateTime();
+        // Show the route for an additional 2 hours after the event
+        $dateTime = (new \DateTime())
+            ->modify('-2 hours')
+            ->format('Y-m-d H:i:s');
 
         $results = $this->createQueryBuilder('e')
             ->select('e')
             ->where('e.datetime > :max')
-                ->setParameter('max', $dateTime->format('Y-m-d 23:59:00'))
+                ->setParameter('max', $dateTime)
             ->getQuery()
             ->getResult();
 
