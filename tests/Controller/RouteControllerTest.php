@@ -162,4 +162,44 @@ class RouteControllerTest extends DatabaseTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h5', 'Test Route');
     }
+
+    /**
+     * @test
+     */
+    public function route_gpx()
+    {
+        $this->databaseTool->loadFixtures([
+            LocationFixtures::class,
+            RouteFixtures::class,
+            RouteCollectionFixtures::class,
+            EventFixtures::class
+        ]);
+
+        $this->client->request('GET', '/routes/ride-the-rogue-5/gpx');
+
+        $response = $this->client->getResponse();
+        $this->assertResponseIsSuccessful();
+        $contentType = $response->headers->get('content-type');
+        $contentDisposition = $response->headers->get('content-disposition');
+
+        $this->assertEquals($contentType, 'application/gpx+xml');
+        $this->assertEquals($contentDisposition, 'attachment; filename=ride-the-rogue-5.gpx');
+    }
+
+    /**
+     * @test
+     */
+    public function route_gpx_error()
+    {
+        $this->databaseTool->loadFixtures([
+            LocationFixtures::class,
+            RouteFixtures::class,
+            RouteCollectionFixtures::class,
+            EventFixtures::class
+        ]);
+
+        $this->client->request('GET', '/routes/ride-the-5/gpx');
+
+        $this->assertResponseStatusCodeSame(404);
+    }
 }
