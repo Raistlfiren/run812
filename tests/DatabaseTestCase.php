@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -14,6 +15,7 @@ class DatabaseTestCase extends WebTestCase
     protected EntityManagerInterface $entityManager;
     protected KernelBrowser $client;
     protected AbstractDatabaseTool $databaseTool;
+    protected $adminUrlGenerator;
 
     protected function setUp(): void
     {
@@ -24,6 +26,8 @@ class DatabaseTestCase extends WebTestCase
         $this->entityManager = $client->getContainer()
             ->get('doctrine')
             ->getManager();
+
+        $this->adminUrlGenerator = $client->getContainer()->get(AdminUrlGenerator::class);
 
         $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
 

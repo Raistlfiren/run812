@@ -1,7 +1,12 @@
 services:
   _defaults:
     autowire: true      # Automatically injects dependencies in your services.
+    bind:
+      $routesDirectory: '%routes_directory%'
 
   App\Tests\DataFixtures\:
     resource: '../tests/DataFixtures'
     tags: ['doctrine.fixture.orm']
+
+  App\Service\RouteHandler:
+    public: true
