@@ -6,16 +6,16 @@ The Javascript is vanilla. The website fetches routes from Ride With GPS.
 [![Symfony](https://github.com/Raistlfiren/run812/actions/workflows/test.yml/badge.svg)](https://github.com/Raistlfiren/run812/actions/workflows/test.yml)
 
 ## Homepage
-![Homepage](./screenshots/homepage.png)
+![Homepage](./screenshots/homepage.jpg)
 
 ## Route View
-![Route View](./screenshots/route_collection_view.png)
+![Route View](./screenshots/route_view.jpg)
 
 ## Route Collection View
-![Route Collection View](./screenshots/route_view.png)
+![Route Collection View](./screenshots/route_collection_view.jpg)
 
 ## PDF View
-![PDF View](./screenshots/pdf_view.png)
+![PDF View](./screenshots/pdf_view.jpg)
 
 Currently, the application can do the following:
 - Fetch routes from Ride With GPS
