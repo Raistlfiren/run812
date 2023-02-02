@@ -13,9 +13,10 @@ class DirectionFilterTest extends KernelTestCase
      */
     public function get_all_filters()
     {
-        $kernel = self::bootKernel();
+        self::bootKernel();
+        $container = static::getContainer();
 
-        $twig = $kernel->getContainer()->get('twig');
+        $twig = $container->get('twig');
         $cleanTurnDirectionFilter = $twig->getFilter('cleanTurnDirection');
         $cleanTurnDirectionCallable = $cleanTurnDirectionFilter->getCallable();
 

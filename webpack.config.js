@@ -11,7 +11,7 @@ Encore
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
     .setPublicPath('/build')
-    // only needed for CDN's or sub-directory deploy
+    // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
     /*
@@ -20,7 +20,6 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
-    // .addEntry('app', './assets/app.jsx')
     .addEntry('app', './assets/app.js')
     .addEntry('homepage', './assets/js/homepage.js')
     .addEntry('route-view', './assets/js/route-view.js')
@@ -52,10 +51,10 @@ Encore
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
 
-    // enables @babel/preset-env polyfills
+    // enables and configure @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
-        config.corejs = 3;
+        config.corejs = '3.23';
     })
 
     // enables Sass/SCSS support
@@ -65,7 +64,7 @@ Encore
     //.enableTypeScriptLoader()
 
     // uncomment if you use React
-    // .enableReactPreset()
+    //.enableReactPreset()
 
     // uncomment to get integrity="..." attributes on your script & link tags
     // requires WebpackEncoreBundle 1.4 or higher
