@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', function(event) {
         };
     }
 
-    const checkboxes = document.querySelectorAll("input[type=checkbox][name=locations]");
-    let checkedLocations = []
+    const locationCheckboxes = document.querySelectorAll("input[type=checkbox][name=locations]");
+    let checkedLocations = [];
 
-    checkboxes.forEach(function(checkbox) {
+    locationCheckboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
             checkedLocations =
-                Array.from(checkboxes) // Convert checkboxes to an array to use filter and map.
+                Array.from(locationCheckboxes) // Convert checkboxes to an array to use filter and map.
                     .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
                     .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
             // console.log(checkedLocations);
@@ -54,9 +54,39 @@ document.addEventListener('DOMContentLoaded', function(event) {
             shuffleInstance.filter(function (element) {
                 console.log(element);
                 let elementLocations = element.getAttribute('data-locations').split(', ');
+                console.log(elementLocations);
                 let keepItem = false;
                 if (checkedLocations.length > 0) {
                     checkedLocations.forEach(function(value) {
+                        // console.log(elementLocations);
+                        keepItem = elementLocations.includes(value);
+                    });
+                } else {
+                    keepItem = true;
+                }
+                return keepItem;
+            });
+        })
+    });
+
+    const runningGroupCheckboxes = document.querySelectorAll("input[type=checkbox][name=runningGroup]");
+    let checkedRunningGroups = [];
+
+    runningGroupCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            checkedRunningGroups =
+                Array.from(runningGroupCheckboxes) // Convert checkboxes to an array to use filter and map.
+                    .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
+                    .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
+            // console.log(checkedLocations);
+
+            shuffleInstance.filter(function (element) {
+                console.log(element);
+                let elementLocations = element.getAttribute('data-groups').split(', ');
+                console.log(elementLocations);
+                let keepItem = false;
+                if (checkedRunningGroups.length > 0) {
+                    checkedRunningGroups.forEach(function(value) {
                         // console.log(elementLocations);
                         keepItem = elementLocations.includes(value);
                     });

@@ -115,6 +115,19 @@ class RouteCollection implements UuidInterface, SluggableInterface
         $route->removeRouteCollection($this);
     }
 
+    public function getRunningGroups()
+    {
+        $runningGroups = [];
+
+        foreach ($this->routes as $route) {
+            foreach ($route->getRunningGroups() as $runningGroup) {
+                $runningGroups[] = $runningGroup->getTitle();
+            }
+        }
+
+        return array_unique($runningGroups);
+    }
+
     public function getLocations()
     {
         $locations = [];

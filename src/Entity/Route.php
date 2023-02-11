@@ -93,10 +93,17 @@ class Route implements UuidInterface, SluggableInterface
     #[ManyToMany(targetEntity: Location::class, inversedBy: 'routes')]
     private $locations;
 
+    /**
+     * @var Collection
+     */
+    #[ManyToMany(targetEntity: RunningGroup::class, inversedBy: 'routes')]
+    private $runningGroups;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4();
         $this->locations = new ArrayCollection();
+        $this->runningGroups = new ArrayCollection();
         $this->routeCollections = new ArrayCollection();
     }
 
@@ -183,6 +190,17 @@ class Route implements UuidInterface, SluggableInterface
         return implode(", ",array_unique($locations));
     }
 
+    public function getFlatRunningGroups()
+    {
+        $runningGroups = [];
+
+        foreach ($this->runningGroups as $runningGroup) {
+            $runningGroups[] = $runningGroup->getTitle();
+        }
+
+        return implode(", ",array_unique($runningGroups));
+    }
+
     /**
      * @return Collection
      */
@@ -219,12 +237,48 @@ class Route implements UuidInterface, SluggableInterface
      */
     public function removeLocation(Location $location)
     {
-        if (!$this->locations->contains($location)) {
+        $this->locations->removeElement($location);
+        $location->removeRoute($this);
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getRunningGroups(): ArrayCollection|Collection
+    {
+        return $this->runningGroups;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $runningGroups
+     * @return Route
+     */
+    public function setRunningGroups(ArrayCollection|Collection $runningGroups): Route
+    {
+        $this->runningGroups = $runningGroups;
+        return $this;
+    }
+
+    /**
+     * @param mixed $runningGroup
+     */
+    public function addRunningGroup($runningGroup)
+    {
+        if ($this->runningGroups->contains($runningGroup)) {
             return;
         }
 
-        $this->locations->removeElement($location);
-        $location->removeRoute($this);
+        $this->runningGroups->add($runningGroup);
+        $runningGroup->addRoute($this);
+    }
+
+    /**
+     * @param mixed $runningGroup
+     */
+    public function removeRunningGroup($runningGroup)
+    {
+        $this->runningGroups->removeElement($runningGroup);
+        $runningGroup->removeRoute(null);
     }
 
 

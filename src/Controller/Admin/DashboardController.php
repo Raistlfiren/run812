@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\Location;
 use App\Entity\Route as RouteEntity;
 use App\Entity\RouteCollection;
+use App\Entity\RunningGroup;
 use App\Entity\User;
 use App\Service\RouteHandler;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -62,6 +63,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::section('Route'),
             MenuItem::linkToCrud('Location', 'fa fa-map', Location::class),
             MenuItem::linkToCrud('Route', 'fa fa-route', RouteEntity::class),
+            MenuItem::linkToCrud('Running Group', 'fa fa-user-group', RunningGroup::class),
 
             MenuItem::section('Route Collection'),
             MenuItem::linkToCrud('Route Collection', 'fa fa-list', RouteCollection::class),

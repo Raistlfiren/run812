@@ -18,7 +18,7 @@
         <div class="container">
             <hr />
             <div class="row">
-                <div class="mb-5 col-md-4 col-sm-12">
+                <div class="mb-5 col-md-3 col-sm-12">
                     <p class="form-label fw-bold">Location</p>
                     {% for location in locations %}
                         <div class="form-check form-check-inline">
@@ -27,13 +27,22 @@
                         </div>
                     {% endfor %}
                 </div>
-                <div class="mb-5 col-md-4 col-sm-12">
+                <div class="mb-5 col-md-3 col-sm-12">
                     <label for="routeNameSearch" class="form-label fw-bold">Name</label>
                     <input type="text" class="form-control" id="routeNameSearch">
                 </div>
-                <div class="col-md-4 col-sm-12">
+                <div class="col-md-3 col-sm-12">
                     <label for="distanceSearch" class="form-label fw-bold">Distance</label>
                     <input type="text" class="form-control" data-min={{ minDistance.0.distance }} data-max={{ maxdistance.0.distance }} id="distanceSearch">
+                </div>
+                <div class="mb-5 col-md-3 col-sm-12">
+                    <p class="form-label fw-bold">Group</p>
+                    {% for runningGroup in runningGroups %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="{{ runningGroup.uuid }}" name="runningGroup" value="{{ runningGroup.title }}">
+                            <label class="form-check-label" for="{{ runningGroup.uuid }}" data-filter="{{ runningGroup.title }}">{{ runningGroup.title }}</label>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -58,6 +67,7 @@
                     {% if route.routeCollections is empty %}
                         <div class="grid-item col-md-4 col-sm-12"
                              data-locations="{{ route.getFlatLocations }}"
+                             data-groups="{{ route.getFlatRunningGroups }}"
                              data-name="{{ route.name }}"
                              data-distance="{{ route.distance }}"
                              data-slug="{{ route.slug }}"
@@ -93,6 +103,7 @@
                         {% if routeCollectionName != routeCollection.name %}
                             <div class="grid-item col-md-4 col-sm-12"
                                  data-locations="{{ routeCollection.locations|join(', ') }}"
+                                 data-groups="{{ routeCollection.runningGroups|join(', ') }}"
                                  data-name="{{ routeCollection.name }}"
                                  data-distance="{{ routeCollection.distances|join(', ') }}"
                                  data-slug="{{ route.slug }}"
