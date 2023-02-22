@@ -20,9 +20,11 @@ class RouteRepository extends ServiceEntityRepository
             ->addSelect('rc')
             ->addSelect('l')
             ->addSelect('rcr')
+            ->addSelect('rg')
             ->leftJoin('r.routeCollections', 'rc')
             ->leftJoin('r.locations', 'l')
             ->leftJoin('rc.routes', 'rcr')
+            ->leftJoin('r.runningGroups', 'rg')
             ->orderBy('r.name')
             ->addOrderBy('rc.name');
 
