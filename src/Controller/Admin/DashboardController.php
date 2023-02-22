@@ -45,6 +45,7 @@ class DashboardController extends AbstractDashboardController
             // set this option if you prefer the page content to span the entire
             // browser width, instead of the default design which sets a max width
             ->renderContentMaximized()
+            ->setFaviconPath('images/favicon-32x32.png')
 
             // set this option if you prefer the sidebar (which contains the main menu)
             // to be displayed as a narrow column instead of the default expanded design
