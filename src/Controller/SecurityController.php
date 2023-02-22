@@ -21,6 +21,7 @@ class SecurityController extends AbstractController
             'error' => $error,
             'page_title' => 'Run/Walk 812 Login',
             'csrf_token_intention' => 'authenticate',
+            'favicon_path' => 'images/favicon-32x32.png',
             'target_path' => $this->generateUrl('admin'),
         ]);
     }
