@@ -3,26 +3,99 @@ import './vendor/rSlider';
 import "../styles/homepage.scss";
 
 document.addEventListener('DOMContentLoaded', function(event) {
-    const maps = {};
-    const routeCards = document.querySelectorAll(".grid-item");
     const distanceSlider = document.getElementById('distanceSearch');
     const minDistance = Math.round(Math.floor(distanceSlider.getAttribute('data-min')));
     const maxDistance = Math.round(Math.ceil(distanceSlider.getAttribute('data-max')));
-
+    let routeName = '';
+    let routeLocations = [];
+    let routeDistances = {'min': null, 'max': null};
+    let routeRunningGroups = [];
 
     const shuffleInstance = new Shuffle(document.getElementById('routeContainer'), {
         itemSelector: '.grid-item'
     });
 
+    function routeNameFilter(element)
+    {
+        const titleElement = element.getAttribute('data-name');
+        const titleText = titleElement.toLowerCase().trim();
+        return titleText.includes(routeName);
+    }
+
+    function routeLocationFilter(element)
+    {
+        let keepItem = true;
+
+        if (routeLocations.length > 0) {
+            let elementLocations = element.getAttribute('data-locations').split(', ');
+            keepItem = false;
+
+            routeLocations.every(function(value) {
+                keepItem = elementLocations.includes(value);
+                return !keepItem;
+            });
+        }
+
+        return keepItem;
+    }
+
+    function routeRunningGroupsFilter(element)
+    {
+        let keepItem = true;
+
+        if (routeRunningGroups.length > 0) {
+            let elementRunningGroups = element.getAttribute('data-groups').split(', ');
+            keepItem = false;
+
+            routeRunningGroups.every(function(value) {
+                keepItem = elementRunningGroups.includes(value);
+                return !keepItem;
+            });
+        }
+
+        return keepItem;
+    }
+
+    function routeDistanceFilter(element)
+    {
+        let keepItem = true;
+
+        if (routeDistances.min !== null) {
+            let elementDistances = element.getAttribute('data-distance').split(', ');
+            keepItem = false;
+
+            elementDistances.forEach(function(value) {
+                let floatValue = parseFloat(value);
+
+                if (floatValue >= parseFloat(routeDistances.min) && floatValue <= parseFloat(routeDistances.max)) {
+                    keepItem = true;
+                }
+            });
+        }
+
+        return keepItem;
+    }
+
+    function filterItems()
+    {
+        shuffleInstance.filter(function (element) {
+            if (
+                routeNameFilter(element) &&
+                routeRunningGroupsFilter(element) &&
+                routeLocationFilter(element) &&
+                routeDistanceFilter(element)
+            ) {
+                return true;
+            }
+            return false;
+        })
+    }
+
     // use value of search field to filter
     const quicksearch = document.getElementById('routeNameSearch');
     quicksearch.addEventListener( 'keyup', debounce( function() {
-        // qsRegex = new RegExp( quicksearch.value, 'gi' );
-        shuffleInstance.filter(function (element) {
-            const titleElement = element.getAttribute('data-name');
-            const titleText = titleElement.toLowerCase().trim();
-            return titleText.indexOf(quicksearch.value.toLowerCase()) !== -1;
-        })
+        routeName = quicksearch.value.toLowerCase();
+        filterItems();
     }, 200 ) );
 
     // debounce so filtering doesn't happen every millisecond
@@ -41,94 +114,26 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
 
     const locationCheckboxes = document.querySelectorAll("input[type=checkbox][name=locations]");
-    let checkedLocations = [];
-
     locationCheckboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
-            checkedLocations =
+            routeLocations =
                 Array.from(locationCheckboxes) // Convert checkboxes to an array to use filter and map.
                     .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
                     .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
-            // console.log(checkedLocations);
-
-            shuffleInstance.filter(function (element) {
-                console.log(element);
-                let elementLocations = element.getAttribute('data-locations').split(', ');
-                console.log(elementLocations);
-                let keepItem = false;
-                if (checkedLocations.length > 0) {
-                    checkedLocations.forEach(function(value) {
-                        // console.log(elementLocations);
-                        keepItem = elementLocations.includes(value);
-                    });
-                } else {
-                    keepItem = true;
-                }
-                return keepItem;
-            });
+            filterItems();
         })
     });
 
     const runningGroupCheckboxes = document.querySelectorAll("input[type=checkbox][name=runningGroup]");
-    let checkedRunningGroups = [];
-
     runningGroupCheckboxes.forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
-            checkedRunningGroups =
+            routeRunningGroups =
                 Array.from(runningGroupCheckboxes) // Convert checkboxes to an array to use filter and map.
                     .filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
                     .map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
-            // console.log(checkedLocations);
-
-            shuffleInstance.filter(function (element) {
-                console.log(element);
-                let elementLocations = element.getAttribute('data-groups').split(', ');
-                console.log(elementLocations);
-                let keepItem = false;
-                if (checkedRunningGroups.length > 0) {
-                    checkedRunningGroups.forEach(function(value) {
-                        // console.log(elementLocations);
-                        keepItem = elementLocations.includes(value);
-                    });
-                } else {
-                    keepItem = true;
-                }
-                return keepItem;
-            });
+            filterItems();
         })
     });
-
-    // const myModal = new Modal(document.getElementById('saturdayModal'));
-    // myModal.show();
-
-    // routeCards.forEach(function (element) {
-    //     let routeSlug = element.getAttribute('data-slug');
-    //     let routeGeoJSONPath = element.getAttribute('data-geojson-path');
-    //
-    //     maps['map-' + routeSlug] = L.map('map-' + routeSlug, {zoomControl: false}).setView([37.9963535, -87.6138192], 12);
-    //
-    //     fetch(routeGeoJSONPath)
-    //         .then((response) => response.json())
-    //         .then(function (data) {
-    //             let map = maps['map-' + data.slug];
-    //
-    //             L.geoJSON(data.geojson, {
-    //                 pointToLayer: function (feature, latlng) {
-    //                     var marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-end.png'})});
-    //
-    //                     if (feature.properties.name == 'start') {
-    //                         marker = L.marker(latlng, {icon: L.icon({iconUrl: '/images/pin-icon-start.png'})});
-    //                     }
-    //
-    //                     return marker;
-    //                 }
-    //             }).addTo(map);
-    //
-    //             let bbox = data.geojson.features[0].bbox;
-    //
-    //             map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]]);
-    //         });
-    // });
 
     const slider3 = new rSlider({
         target: '#distanceSearch',
@@ -141,21 +146,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
         tooltip: false,
         onChange: function(values) {
             let specifiedLength = values.split(',');
-
-            shuffleInstance.filter(function (element) {
-                // console.log(element);
-                let elementDistances = element.getAttribute('data-distance').split(', ');
-                let keepItem = false;
-                elementDistances.forEach(function(value) {
-                    let floatValue = parseFloat(value);
-
-                    if (floatValue >= parseFloat(specifiedLength[0]) && floatValue <= parseFloat(specifiedLength[1])) {
-                        keepItem = true;
-                    }
-                });
-                return keepItem;
-            });
-            // console.log(values);
+            routeDistances.min = specifiedLength[0];
+            routeDistances.max = specifiedLength[1];
+            filterItems();
         }
     });
 }, {passive: true});
