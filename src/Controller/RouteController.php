@@ -46,6 +46,7 @@ class RouteController extends AbstractController
     public function scheduled(Request $request, EventRepository $eventRepository)
     {
         $route = null;
+        $routeCollection = null;
         /** @var Event|null $scheduledRoute */
         $scheduledRoute = $eventRepository->findLatestRoute();
 
@@ -64,7 +65,8 @@ class RouteController extends AbstractController
 
         return [
             'route' => $route,
-            'scheduledRoute' => $scheduledRoute
+            'scheduledRoute' => $scheduledRoute,
+            'routeCollection' => $routeCollection
         ];
     }
 
