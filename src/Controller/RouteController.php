@@ -73,6 +73,7 @@ class RouteController extends AbstractController
     public function view(Request $request, $slug)
     {
         $route = $this->routeRepository->findOneBy(['slug' => $slug]);
+        $routeCollection = null;
 
         if (empty($route)) {
             /** @var RouteCollection $routeCollection */
@@ -88,6 +89,7 @@ class RouteController extends AbstractController
 
         return [
             'route' => $route,
+            'routeCollection' => $routeCollection
         ];
     }
 
