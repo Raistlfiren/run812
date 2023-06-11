@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block meta %}
+    <meta property="og:title" content="{{ route.name }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ app.request.uri }}" />
+    <meta property="og:image" content="{{ absolute_url(asset('/routes/' ~ route.id ~ '.webp')) }}" />
+{% endblock %}
+
 {% block title %}{{ route.name }}{% endblock %}
 
 {% block body %}
