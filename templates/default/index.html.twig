@@ -122,7 +122,7 @@
                                         <p><strong>Distances</strong></p>
                                         <p>
                                             {% for routeItem in routeCollection.routes %}
-                                                <a href="{{ path('route_view', {'slug': route.slug}) }}" class="btn btn-primary mt-1">{{ routeItem.distance }}</a>
+                                                <a href="{{ path('route_view', {'slug': routeItem.slug}) }}" class="btn btn-primary mt-1">{{ routeItem.distance }}</a>
                                             {% endfor %}
                                         </p>
                                         <p><strong>Locations</strong></p>
